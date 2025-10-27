@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.system.mapper.TrainingPlanStudentMapper">
+
+    <insert id="batchInsert">
+        insert into training_plan_student (plan_id, user_id, enrolled_at)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.planId}, #{item.userId}, #{item.enrolledAt})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPlanId">
+        delete from training_plan_student where plan_id = #{planId}
+    </delete>
+
+    <select id="findStudentsByPlanId" resultType="com.system.vo.TrainingPlanDetailVO$StudentInPlanVO">
+        select
+            u.user_id,
+            u.nickname,
+            tps.enrolled_at
+        from
+            training_plan_student tps
+                join
+            user u on tps.user_id = u.user_id
+        where
+            tps.plan_id = #{planId}
+    </select>
+
+</mapper>

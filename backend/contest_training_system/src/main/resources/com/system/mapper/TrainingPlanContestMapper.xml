@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.system.mapper.TrainingPlanContestMapper">
+
+    <insert id="batchInsert">
+        insert into training_plan_contest (plan_id, contest_id, sequence, added_time, description)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.planId}, #{item.contestId}, #{item.sequence}, #{item.addedTime}, #{item.description})
+        </foreach>
+    </insert>
+
+    <delete id="deleteByPlanId">
+        delete from training_plan_contest where plan_id = #{planId}
+    </delete>
+
+    <select id="findContestsByPlanId" resultType="com.system.vo.TrainingPlanDetailVO$ContestInPlanVO">
+        select
+            c.contest_id,
+            c.title,
+            tpc.sequence,
+            tpc.added_time,
+            tpc.description
+        from
+            training_plan_contest tpc
+                join
+            contest c on tpc.contest_id = c.contest_id
+        where
+            tpc.plan_id = #{planId}
+        order by
+            tpc.sequence asc
+    </select>
+
+</mapper>

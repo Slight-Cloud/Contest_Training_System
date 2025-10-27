@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.system.mapper.UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.system.entity.User">
+        <id column="user_id" property="userId" jdbcType="BIGINT"/>
+        <result column="email" property="email" jdbcType="VARCHAR"/>
+        <result column="phone_number" property="phoneNumber" jdbcType="VARCHAR"/>
+        <result column="nickname" property="nickname" jdbcType="VARCHAR"/>
+        <result column="student_id" property="studentId" jdbcType="VARCHAR"/>
+        <result column="password_hash" property="passwordHash" jdbcType="VARCHAR"/>
+        <result column="role" property="role" jdbcType="VARCHAR"/>
+        <result column="is_active" property="isActive" jdbcType="TINYINT"/>
+        <result column="created_at" property="createdAt" jdbcType="TIMESTAMP"/>
+        <result column="updated_at" property="updatedAt" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        user_id
+        , email, phone_number, nickname, student_id, password_hash, role, is_active, created_at, updated_at
+    </sql>
+
+    <delete id="deactivateUserById">
+        UPDATE User
+        SET is_active  = 0,
+            updated_at = NOW()
+        WHERE user_id = #{userId}
+    </delete>
+
+    <select id="findByEmail" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM User
+        WHERE email = #{email}
+    </select>
+
+    <select id="findByPhoneNumber" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM User
+        WHERE phone_number = #{phoneNumber}
+    </select>
+
+    <select id="findByStudentId" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM User
+        WHERE student_id = #{studentId}
+    </select>
+
+    <select id="findByEmailOrPhone" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM User
+        WHERE email = #{identifier} OR phone_number = #{identifier}
+    </select>
+
+    <insert id="insertUser" parameterType="com.system.entity.User" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO User (email, phone_number, nickname, student_id, password_hash, role, is_active, created_at,
+                          updated_at)
+        VALUES (#{email}, #{phoneNumber}, #{nickname}, #{studentId}, #{passwordHash}, #{role}, 1, NOW(), NOW())
+    </insert>
+
+    <select id="findById" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM User
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="findBasicInfoById" resultType="com.system.entity.User">
+        SELECT user_id, email, phone_number, nickname, student_id, role,created_at, is_active
+        FROM User
+        WHERE user_id = #{userId}
+    </select>
+
+    <select id="pageQuery" resultType="com.system.vo.UserProfileVO">
+        SELECT
+        u.user_id,
+        u.email,
+        u.phone_number,
+        u.nickname,
+        u.student_id,
+        u.role,
+        u.is_active,
+        u.created_at
+        FROM
+        User u
+        <where>
+            <if test="query.keyword != null and query.keyword != ''">
+                AND (
+                CAST(u.user_id AS CHAR) LIKE CONCAT('%', #{query.keyword}, '%')
+                OR u.email LIKE CONCAT('%', #{query.keyword}, '%')
+                OR u.phone_number LIKE CONCAT('%', #{query.keyword}, '%')
+                OR u.nickname LIKE CONCAT('%', #{query.keyword}, '%')
+                OR u.student_id LIKE CONCAT('%', #{query.keyword}, '%')
+                )
+            </if>
+            <if test="query.role != null and query.role != ''">
+                AND u.role = #{query.role}
+            </if>
+            <if test="query.isActive != null">
+                AND u.is_active = #{query.isActive}
+            </if>
+        </where>
+        ORDER BY
+        ${sortColumn} ${sortDirection}
+    </select>
+
+    <update id="updateUser" parameterType="com.system.entity.User">
+        UPDATE User
+        <set>
+            <if test="nickname != null and nickname != ''">
+                nickname = #{nickname},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email},
+            </if>
+            <if test="studentId != null and studentId != ''">
+                student_id = #{studentId},
+            </if>
+            <if test="phoneNumber != null and phoneNumber != ''">
+                phone_number = #{phoneNumber},
+            </if>
+            <if test="passwordHash != null and passwordHash != ''">
+                password_hash = #{passwordHash},
+            </if>
+            updated_at = NOW()
+        </set>
+        WHERE user_id = #{userId}
+    </update>
+
+</mapper>

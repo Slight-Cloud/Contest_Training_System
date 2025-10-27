@@ -1,0 +1,2082 @@
+openapi: 3.0.0
+info:
+  title: 竞赛集训系统 API
+  description: '根据提供的Markdown文档生成的完整版竞赛集训系统RESTful API'
+  version: '1.0.0'
+servers:
+  - url: https://api.example.com
+    description: '生产服务器'
+
+tags:
+  - name: '1. 用户管理'
+    description: '用户注册、登录、信息管理等'
+  - name: '2. 赛事管理'
+    description: '赛事的创建、查询、修改、删除等'
+  - name: '3. 题库管理'
+    description: '题目的增删改查、测试数据管理等'
+  - name: '4. 提交与评测'
+    description: '代码提交与评测结果查询'
+  - name: '5. 排名与积分榜'
+    description: '赛事排名和多赛事统计'
+  - name: '6. 训练计划'
+    description: '训练计划的管理'
+  - name: '8. 文件管理'
+    description: '文件上传与下载'
+
+paths:
+  # 1. 用户管理
+  /register:
+    post:
+      tags:
+        - '1. 用户管理'
+      summary: '1.1 注册用户'
+      description: '用户注册，创建新账号'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - phoneNumber
+                - nickname
+                - studentId
+                - password
+              properties:
+                email:
+                  type: string
+                  description: '邮箱'
+                  example: 'test@example.com'
+                phoneNumber:
+                  type: string
+                  description: '手机号'
+                  example: '13800000000'
+                nickname:
+                  type: string
+                  description: '昵称'
+                  example: '张三'
+                studentId:
+                  type: string
+                  description: '学号'
+                  example: '20250001'
+                password:
+                  type: string
+                  description: '密码'
+                  example: '123456'
+      responses:
+        '200':
+          description: '注册成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: '响应码，1成功，0失败'
+                    example: 1
+                  msg:
+                    type: string
+                    description: '提示信息'
+                    example: '注册成功'
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: integer
+                        example: 1001
+                      email:
+                        type: string
+                        example: 'test@example.com'
+                      nickname:
+                        type: string
+                        example: '张三'
+  /login:
+    post:
+      tags:
+        - '1. 用户管理'
+      summary: '1.2 用户登录'
+      description: '用户登录，获取token'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - emailOrPhone
+                - password
+              properties:
+                emailOrPhone:
+                  type: string
+                  description: '邮箱或手机号'
+                  example: 'test@example.com'
+                password:
+                  type: string
+                  description: '密码'
+                  example: '123456'
+      responses:
+        '200':
+          description: '登录成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: '登录成功'
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: 'xxxxxx'
+  /user/deactivate:
+    post:
+      tags:
+        - '1. 用户管理'
+      summary: '1.3 注销用户'
+      description: '注销当前用户'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - token
+              properties:
+                token:
+                  type: string
+                  description: '用户token'
+                  example: 'xxxxxx'
+      responses:
+        '200':
+          description: '注销成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: '注销成功'
+                  data:
+                    type: 'object'
+                    nullable: true
+  /user/update:
+    put:
+      tags:
+        - '1. 用户管理'
+      summary: '1.4 更新用户信息'
+      description: '更新用户基本信息'
+      security:
+        - bearerAuth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nickname:
+                  type: string
+                  description: '新昵称'
+                  example: '新昵称'
+                phoneNumber:
+                  type: string
+                  description: '新手机号'
+                  example: '13900000000'
+                password:
+                  type: string
+                  description: '新密码'
+                  example: 'newpassword'
+      responses:
+        '200':
+          description: '更新成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: '更新成功'
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: integer
+                        example: 1001
+                      nickname:
+                        type: string
+                        example: '新昵称'
+                      phoneNumber:
+                        type: string
+                        example: '13900000000'
+  /user/profile:
+    get:
+      tags:
+        - '1. 用户管理'
+      summary: '1.5 获取用户信息'
+      description: '获取当前用户详细信息'
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: '获取成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: 'success'
+                  data:
+                    type: object
+                    properties:
+                      userId:
+                        type: integer
+                        example: 1001
+                      email:
+                        type: string
+                        example: 'test@example.com'
+                      phoneNumber:
+                        type: string
+                        example: '13800000000'
+                      nickname:
+                        type: string
+                        example: '张三'
+                      studentId:
+                        type: string
+                        example: '20250001'
+                      role:
+                        type: string
+                        example: 'STUDENT'
+                      createdAt:
+                        type: string
+                        format: 'date-time'
+                        example: '2025-01-01 10:00:00'
+  /admin/users:
+    get:
+      tags:
+        - '1. 用户管理'
+      summary: '1.6 查询用户列表（管理员）'
+      description: '管理员查询用户列表，支持分页、筛选和排序'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+          description: '页码'
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+          description: '每页数量'
+        - name: keyword
+          in: query
+          schema:
+            type: string
+          description: '搜索关键字（昵称/邮箱/学号）'
+        - name: role
+          in: query
+          schema:
+            type: string
+          description: '用户角色筛选'
+        - name: isActive
+          in: query
+          schema:
+            type: integer
+            enum: [0, 1]
+          description: '用户状态筛选（0/1）'
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum:
+              [id_asc, id_desc, nickname_asc, nickname_desc, created_asc, created_desc]
+            default: 'id_asc'
+          description: '排序字段'
+      responses:
+        '200':
+          description: '查询成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: 'success'
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 100
+                      page:
+                        type: integer
+                        example: 1
+                      pageSize:
+                        type: integer
+                        example: 20
+                      users:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            userId:
+                              type: integer
+                              example: 1001
+                            email:
+                              type: string
+                              example: 'test@example.com'
+                            nickname:
+                              type: string
+                              example: '张三'
+                            studentId:
+                              type: string
+                              example: '20250001'
+                            role:
+                              type: string
+                              example: 'STUDENT'
+                            isActive:
+                              type: integer
+                              example: 1
+                            createdAt:
+                              type: string
+                              format: date-time
+                              example: '2025-01-01 10:00:00'
+
+  # 2. 赛事管理
+  /contest/create:
+    post:
+      tags:
+        - '2. 赛事管理'
+      summary: '2.1 新建赛事'
+      description: '教师新建赛事'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - startTime
+                - end_time
+                - visibility
+                - problemIds
+              properties:
+                title:
+                  type: string
+                  example: '2025年春季赛'
+                description:
+                  type: string
+                  example: '春季编程竞赛'
+                startTime:
+                  type: string
+                  format: date-time
+                  example: '2025-04-01 09:00:00'
+                end_time:
+                  type: string
+                  format: date-time
+                  example: '2025-04-01 12:00:00'
+                password:
+                  type: string
+                  example: 'abc123'
+                visibility:
+                  type: string
+                  enum: [PUBLIC, PRIVATE]
+                  example: 'PUBLIC'
+                problemIds:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1, 2, 3]
+      responses:
+        '200':
+          description: '创建成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "创建成功"
+                  data:
+                    type: object
+                    properties:
+                      contestId:
+                        type: integer
+                        example: 101
+  /contest/{contestId}:
+    get:
+      tags:
+        - '2. 赛事管理'
+      summary: '2.5 获取赛事详情'
+      description: '获取赛事详细信息和题目列表'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: contestId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 101
+      responses:
+        '200':
+          description: '获取成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      contestId:
+                        type: integer
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      startTime:
+                        type: string
+                      end_time:
+                        type: string
+                      visibility:
+                        type: string
+                      state:
+                        type: string
+                      creatorId:
+                        type: integer
+                      problems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            problemId:
+                              type: integer
+                            title:
+                              type: string
+                            displayOrder:
+                              type: integer
+                            timeLimit:
+                              type: integer
+                            memoryLimit:
+                              type: integer
+                      participantCount:
+                        type: integer
+    delete:
+      tags:
+        - '2. 赛事管理'
+      summary: '2.2 删除赛事'
+      description: '根据ID删除赛事'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: contestId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 101
+      responses:
+        '200':
+          description: '删除成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "删除成功"
+                  data:
+                    type: 'object'
+                    nullable: true
+  /contest/update:
+    put:
+      tags:
+        - '2. 赛事管理'
+      summary: '2.3 修改赛事'
+      description: '教师修改赛事信息'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - contestId
+              properties:
+                contestId:
+                  type: integer
+                  example: 101
+                title:
+                  type: string
+                  example: '2025年春季赛（修改版）'
+                description:
+                  type: string
+                  example: '春季编程竞赛修改版'
+                startTime:
+                  type: string
+                  format: date-time
+                end_time:
+                  type: string
+                  format: date-time
+                password:
+                  type: string
+                visibility:
+                  type: string
+                  enum: [PUBLIC, PRIVATE]
+                problemIds:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1,2,3,4]
+      responses:
+        '200':
+          description: '修改成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "修改成功"
+                  data:
+                    type: object
+                    properties:
+                      contestId:
+                        type: integer
+                        example: 101
+                      title:
+                        type: string
+                        example: '2025年春季赛（修改版）'
+  /contest/list:
+    get:
+      tags:
+        - '2. 赛事管理'
+      summary: '2.4 查询赛事列表'
+      description: '查询赛事列表，支持分页、筛选和排序'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: visibility
+          in: query
+          schema:
+            type: string
+            enum: [PUBLIC, PRIVATE]
+        - name: state
+          in: query
+          schema:
+            type: string
+        - name: keyword
+          in: query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [id_asc, id_desc, title_asc, title_desc, start_time_asc, start_time_desc]
+            default: 'id_asc'
+      responses:
+        '200':
+          description: '查询成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 50
+                      page:
+                        type: integer
+                        example: 1
+                      pageSize:
+                        type: integer
+                        example: 10
+                      contests:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            contestId:
+                              type: integer
+                            title:
+                              type: string
+                            description:
+                              type: string
+                            startTime:
+                              type: string
+                            end_time:
+                              type: string
+                            visibility:
+                              type: string
+                            state:
+                              type: string
+                            participantCount:
+                              type: integer
+  /contest/join:
+    post:
+      tags:
+        - '2. 赛事管理'
+      summary: '2.6 参与赛事'
+      description: '学生参与赛事（公开赛事或输入密码）'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - contestId
+              properties:
+                contestId:
+                  type: integer
+                  example: 101
+                password:
+                  type: string
+                  example: 'abc123'
+                teamName:
+                  type: string
+                  example: '我的队伍'
+      responses:
+        '200':
+          description: '参赛成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: '参赛成功'
+                  data:
+                    type: 'object'
+                    nullable: true
+  
+  # 3. 题库管理
+  /problem/create:
+    post:
+      tags:
+        - '3. 题库管理'
+      summary: '3.1 新建题目'
+      description: '教师新建题目'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - description
+                - inputSpec
+                - outputSpec
+                - sampleInput
+                - sampleOutput
+                - timeLimit
+                - memoryLimit
+                - testdataZip
+              properties:
+                title:
+                  type: string
+                  example: "A+B Problem"
+                description:
+                  type: string
+                  example: "计算两个数之和"
+                inputSpec:
+                  type: string
+                  example: "输入两个整数"
+                outputSpec:
+                  type: string
+                  example: "输出一个整数"
+                sampleInput:
+                  type: string
+                  example: "1 2"
+                sampleOutput:
+                  type: string
+                  example: "3"
+                remark:
+                  type: string
+                  example: "无"
+                timeLimit:
+                  type: integer
+                  example: 1000
+                memoryLimit:
+                  type: integer
+                  example: 256
+                testdataZip:
+                  type: string
+                  example: "url/to/zip"
+      responses:
+        '200':
+          description: '创建成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: '创建成功'
+                  data:
+                    type: object
+                    properties:
+                      problemId:
+                        type: integer
+                        example: 201
+  /problem/update:
+    put:
+      tags:
+        - '3. 题库管理'
+      summary: '3.2 修改题目'
+      description: '教师修改题目信息'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - problemId
+              properties:
+                problemId:
+                  type: integer
+                  example: 201
+                title:
+                  type: string
+                  example: "A+B Problem（修改版）"
+                description:
+                  type: string
+                  example: "计算两个数之和（修改版）"
+                inputSpec:
+                  type: string
+                outputSpec:
+                  type: string
+                sampleInput:
+                  type: string
+                sampleOutput:
+                  type: string
+                remark:
+                  type: string
+                timeLimit:
+                  type: integer
+                  example: 2000
+                memoryLimit:
+                  type: integer
+      responses:
+        '200':
+          description: '修改成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "修改成功"
+                  data:
+                    type: object
+                    properties:
+                      problemId:
+                        type: integer
+                        example: 201
+                      title:
+                        type: string
+                        example: "A+B Problem（修改版）"
+  /problem/{problemId}:
+    get:
+      tags:
+        - '3. 题库管理'
+      summary: '3.5 获取题目详情'
+      description: '获取题目详细信息'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: problemId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 201
+      responses:
+        '200':
+          description: '获取成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: 'success'
+                  data:
+                    type: object
+                    properties:
+                      problemId:
+                        type: integer
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      inputSpec:
+                        type: string
+                      outputSpec:
+                        type: string
+                      sampleInput:
+                        type: string
+                      sampleOutput:
+                        type: string
+                      remark:
+                        type: string
+                      timeLimit:
+                        type: integer
+                      memoryLimit:
+                        type: integer
+                      creatorId:
+                        type: integer
+                      isHidden:
+                        type: integer
+                      createdAt:
+                        type: string
+                        format: date-time
+                      datasets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            datasetId:
+                              type: integer
+                            version:
+                              type: integer
+                            zipUrl:
+                              type: string
+                            isActive:
+                              type: integer
+                            addedAt:
+                              type: string
+                              format: date-time
+    delete:
+      tags:
+        - '3. 题库管理'
+      summary: '3.3 删除/隐藏题目'
+      description: '删除或隐藏题目（未在赛事中使用可删除，否则隐藏）'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: problemId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 201
+      responses:
+        '200':
+          description: '操作成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "题目已隐藏（在赛事中使用）"
+                  data:
+                    type: object
+                    properties:
+                      problemId:
+                        type: integer
+                        example: 201
+                      action:
+                        type: string
+                        example: "hidden"
+  /problem/list:
+    get:
+      tags:
+        - '3. 题库管理'
+      summary: '3.4 查询题目列表'
+      description: '查询题目列表，支持分页、筛选和排序'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: keyword
+          in: query
+          schema:
+            type: string
+        - name: creatorId
+          in: query
+          schema:
+            type: integer
+        - name: isHidden
+          in: query
+          schema:
+            type: integer
+            enum: [0, 1]
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [id_asc, id_desc, title_asc, title_desc, created_asc, created_desc]
+            default: 'id_asc'
+      responses:
+        '200':
+          description: '查询成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: 'success'
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 50
+                      page:
+                        type: integer
+                        example: 1
+                      pageSize:
+                        type: integer
+                        example: 10
+                      problems:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            problemId:
+                              type: integer
+                            title:
+                              type: string
+                            timeLimit:
+                              type: integer
+                            memoryLimit:
+                              type: integer
+                            creatorId:
+                              type: integer
+                            isHidden:
+                              type: integer
+                            createdAt:
+                              type: string
+                              format: date-time
+  /problem/dataset/add:
+    post:
+      tags:
+        - '3. 题库管理'
+      summary: '3.6 添加测试数据'
+      description: '为题目添加新的测试数据'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - problemId
+                - testdataZip
+              properties:
+                problemId:
+                  type: integer
+                  example: 201
+                testdataZip:
+                  type: string
+                  example: "url/to/new_dataset.zip"
+      responses:
+        '200':
+          description: '添加成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "添加成功"
+                  data:
+                    type: object
+                    properties:
+                      datasetId:
+                        type: integer
+                        example: 2
+                      problemId:
+                        type: integer
+                        example: 201
+                      version:
+                        type: integer
+                        example: 2
+  /problem/solution/create:
+    post:
+      tags:
+        - '3. 题库管理'
+      summary: '3.7 发布题解报告'
+      description: '教师为题目发布题解报告'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - problemId
+                - title
+                - content
+              properties:
+                problemId:
+                  type: integer
+                  example: 201
+                title:
+                  type: string
+                  example: "A+B Problem 题解"
+                content:
+                  type: string
+                  example: "这是一道简单的加法题..."
+                isPublished:
+                  type: integer
+                  default: 1
+                  example: 1
+      responses:
+        '200':
+          description: '发布成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "发布成功"
+                  data:
+                    type: object
+                    properties:
+                      reportId:
+                        type: integer
+                        example: 301
+                      problemId:
+                        type: integer
+                        example: 201
+  /problem/{problemId}/solution/list:
+    get:
+      tags:
+        - '3. 题库管理'
+      summary: '3.8 查询题解列表'
+      description: '查询题目的题解报告列表'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: problemId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 201
+      responses:
+        '200':
+          description: '查询成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "success"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        reportId:
+                          type: integer
+                        title:
+                          type: string
+                        creatorId:
+                          type: integer
+                        isPublished:
+                          type: integer
+                        createdAt:
+                          type: string
+                          format: date-time
+  
+  # 4. 提交与评测
+  /submission/submit:
+    post:
+      tags:
+        - '4. 提交与评测'
+      summary: '4.1 提交代码'
+      description: '学生提交代码，自动评测'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - contestId
+                - problemId
+                - code
+                - language
+                - compiler
+              properties:
+                contestId:
+                  type: integer
+                  example: 101
+                problemId:
+                  type: integer
+                  example: 201
+                code:
+                  type: string
+                  example: "print(sum(map(int,input().split())))"
+                language:
+                  type: string
+                  example: "Python"
+                compiler:
+                  type: string
+                  example: "Python 3.10"
+      responses:
+        '200':
+          description: '提交成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "提交成功"
+                  data:
+                    type: object
+                    properties:
+                      result:
+                        type: string
+                        example: "AC"
+                      timeUsed:
+                        type: integer
+                        example: 12
+                      memoryUsed:
+                        type: integer
+                        example: 128
+                      judgeLogUrl:
+                        type: string
+                        example: "url/to/log"
+  /submission/list:
+    get:
+      tags:
+        - '4. 提交与评测'
+      summary: '4.2 查询提交记录'
+      description: '查询提交记录，支持分页、筛选和排序'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: contestId
+          in: query
+          schema:
+            type: integer
+        - name: problemId
+          in: query
+          schema:
+            type: integer
+        - name: userId
+          in: query
+          schema:
+            type: integer
+        - name: result
+          in: query
+          schema:
+            type: string
+        - name: language
+          in: query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [id_asc, id_desc, created_asc, created_desc, time_used_asc, time_used_desc]
+            default: 'id_desc'
+      responses:
+        '200':
+          description: '查询成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 100
+                      page:
+                        type: integer
+                        example: 1
+                      pageSize:
+                        type: integer
+                        example: 10
+                      submissions:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            submissionId:
+                              type: integer
+                            contestId:
+                              type: integer
+                            problemId:
+                              type: integer
+                            userId:
+                              type: integer
+                            nickname:
+                              type: string
+                            language:
+                              type: string
+                            result:
+                              type: string
+                            timeUsed:
+                              type: integer
+                            memoryUsed:
+                              type: integer
+                            createdAt:
+                              type: string
+                              format: date-time
+  /submission/{submissionId}:
+    get:
+      tags:
+        - '4. 提交与评测'
+      summary: '4.3 获取提交详情'
+      description: '获取提交的详细信息和代码'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: submissionId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1001
+      responses:
+        '200':
+          description: '获取成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      submissionId:
+                        type: integer
+                      contestId:
+                        type: integer
+                      problemId:
+                        type: integer
+                      userId:
+                        type: integer
+                      code:
+                        type: string
+                      codeLength:
+                        type: integer
+                      language:
+                        type: string
+                      compiler:
+                        type: string
+                      result:
+                        type: string
+                      timeUsed:
+                        type: integer
+                      memoryUsed:
+                        type: integer
+                      createdAt:
+                        type: string
+                        format: date-time
+                      judgeLogUrl:
+                        type: string
+  /submission/{submissionId}/testcase:
+    get:
+      tags:
+        - '4. 提交与评测'
+      summary: '4.4 获取测试点结果'
+      description: '获取提交的各测试点详细结果'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: submissionId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1001
+      responses:
+        '200':
+          description: '获取成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "success"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        caseIndex:
+                          type: integer
+                        datasetVersion:
+                          type: integer
+                        result:
+                          type: string
+                        timeUsed:
+                          type: integer
+                        memoryUsed:
+                          type: integer
+                        message:
+                          type: string
+  
+  # 5. 排名与积分榜
+  /contest/{contestId}/rank:
+    get:
+      tags:
+        - '5. 排名与积分榜'
+      summary: '5.1 获取赛事排名'
+      description: '获取赛事排名信息'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: contestId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 101
+      responses:
+        '200':
+          description: '获取成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: 'success'
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: integer
+                          example: 1001
+                        nickname:
+                          type: string
+                          example: "张三"
+                        solvedCount:
+                          type: integer
+                          example: 3
+                        penaltyMinutes:
+                          type: integer
+                          example: 40
+  /scoreboard/statistics:
+    post:
+      tags:
+        - '5. 排名与积分榜'
+      summary: '5.2 获取积分榜统计'
+      description: '教师选择多个赛事，统计学生在这些赛事中的表现'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - contestIds
+              properties:
+                contestIds:
+                  type: array
+                  items:
+                    type: integer
+                  example: [101, 102, 103]
+      responses:
+        '200':
+          description: '统计成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      totalContests:
+                        type: integer
+                      statistics:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            userId:
+                              type: integer
+                            nickname:
+                              type: string
+                            totalParticipations:
+                              type: integer
+                            totalSolved:
+                              type: integer
+                            totalPenalty:
+                              type: integer
+                            averageSolved:
+                              type: number
+                              format: float
+                            contestDetails:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  contestId:
+                                    type: integer
+                                  solvedCount:
+                                    type: integer
+                                  penaltyMinutes:
+                                    type: integer
+  /contest/rank/detail:
+    get:
+      tags:
+        - '5. 排名与积分榜'
+      summary: '5.3 获取排名详细信息'
+      description: '获取赛事排名的详细信息，包括每道题的用时和错误次数'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: contestId
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 101
+        - name: userId
+          in: query
+          schema:
+            type: integer
+            example: 1001
+      responses:
+        '200':
+          description: '获取成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "success"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        userId:
+                          type: integer
+                        nickname:
+                          type: string
+                        rank:
+                          type: integer
+                        solvedCount:
+                          type: integer
+                        penaltyMinutes:
+                          type: integer
+                        problemStats:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              problemId:
+                                type: integer
+                              displayOrder:
+                                type: integer
+                              isSolved:
+                                type: boolean
+                              timeUsedMinutes:
+                                type: integer
+                              wrongAttempts:
+                                type: integer
+                              firstAcTime:
+                                type: string
+                                format: date-time
+
+  # 6. 训练计划
+  /training_plan/create:
+    post:
+      tags:
+        - '6. 训练计划'
+      summary: '6.1 新建训练计划'
+      description: '教师新建训练计划'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - title
+                - startTime
+                - end_time
+                - contestIds
+                - studentIds
+              properties:
+                title:
+                  type: string
+                  example: "春季集训"
+                description:
+                  type: string
+                  example: "2025年春季集训计划"
+                startTime:
+                  type: string
+                  format: date-time
+                  example: "2025-03-01 09:00:00"
+                end_time:
+                  type: string
+                  format: date-time
+                  example: "2025-05-01 18:00:00"
+                contestIds:
+                  type: array
+                  items:
+                    type: integer
+                  example: [101, 102]
+                studentIds:
+                  type: array
+                  items:
+                    type: integer
+                  example: [1001, 1002]
+      responses:
+        '200':
+          description: '创建成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "创建成功"
+                  data:
+                    type: object
+                    properties:
+                      planId:
+                        type: integer
+                        example: 301
+  /training_plan/update:
+    put:
+      tags:
+        - '6. 训练计划'
+      summary: '6.2 修改训练计划'
+      description: '教师修改训练计划'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - planId
+              properties:
+                planId:
+                  type: integer
+                  example: 301
+                title:
+                  type: string
+                  example: "春季集训（修改版）"
+                description:
+                  type: string
+                  example: "2025年春季集训计划修改版"
+                startTime:
+                  type: string
+                  format: date-time
+                end_time:
+                  type: string
+                  format: date-time
+                contestIds:
+                  type: array
+                  items:
+                    type: integer
+                  example: [101, 102, 103]
+                studentIds:
+                  type: array
+                  items:
+                    type: integer
+      responses:
+        '200':
+          description: '修改成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "修改成功"
+                  data:
+                    type: object
+                    properties:
+                      planId:
+                        type: integer
+                        example: 301
+                      title:
+                        type: string
+                        example: "春季集训（修改版）"
+  /training_plan/{planId}:
+    get:
+      tags:
+        - '6. 训练计划'
+      summary: '6.5 获取训练计划详情'
+      description: '获取训练计划详细信息'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: planId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 301
+      responses:
+        '200':
+          description: '获取成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      planId:
+                        type: integer
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      state:
+                        type: string
+                      startTime:
+                        type: string
+                        format: date-time
+                      end_time:
+                        type: string
+                        format: date-time
+                      creatorId:
+                        type: integer
+                      contests:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            contestId:
+                              type: integer
+                            title:
+                              type: string
+                            sequence:
+                              type: integer
+                            addedTime:
+                              type: string
+                              format: date-time
+                            description:
+                              type: string
+                      students:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            userId:
+                              type: integer
+                            nickname:
+                              type: string
+                            enrolledAt:
+                              type: string
+                              format: date-time
+    delete:
+      tags:
+        - '6. 训练计划'
+      summary: '6.3 删除训练计划'
+      description: '删除训练计划'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: planId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 301
+      responses:
+        '200':
+          description: '删除成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "删除成功"
+                  data:
+                    type: object
+                    properties:
+                      planId:
+                        type: integer
+                        example: 301
+                      action:
+                        type: string
+                        example: "deleted"
+  /training_plan/list:
+    get:
+      tags:
+        - '6. 训练计划'
+      summary: '6.4 查询训练计划列表'
+      description: '查询训练计划列表'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: pageSize
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: state
+          in: query
+          schema:
+            type: string
+            enum: [UPCOMING, ONGOING, FINISHED]
+        - name: creatorId
+          in: query
+          schema:
+            type: integer
+        - name: keyword
+          in: query
+          schema:
+            type: string
+        - name: sortBy
+          in: query
+          schema:
+            type: string
+            enum: [id_asc, id_desc, title_asc, title_desc, start_time_asc, start_time_desc, created_asc, created_desc]
+            default: 'id_asc'
+      responses:
+        '200':
+          description: '查询成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: "success"
+                  data:
+                    type: object
+                    properties:
+                      total:
+                        type: integer
+                        example: 20
+                      page:
+                        type: integer
+                        example: 1
+                      pageSize:
+                        type: integer
+                        example: 10
+                      plans:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            planId:
+                              type: integer
+                            title:
+                              type: string
+                            state:
+                              type: string
+                            startTime:
+                              type: string
+                              format: date-time
+                            end_time:
+                              type: string
+                              format: date-time
+                            creatorId:
+                              type: integer
+                            studentCount:
+                              type: integer
+                            contestCount:
+                              type: integer
+
+  # 8. 文件管理
+  /file/upload/testdata:
+    post:
+      tags:
+        - '8. 文件管理'
+      summary: '8.1 上传测试数据'
+      description: '上传题目测试数据ZIP文件'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: 'ZIP文件'
+      responses:
+        '200':
+          description: '上传成功'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 1
+                  msg:
+                    type: string
+                    example: '上传成功'
+                  data:
+                    type: object
+                    properties:
+                      fileUrl:
+                        type: string
+                        example: 'https://example.com/uploads/testdata/abc123.zip'
+                      fileSize:
+                        type: integer
+                        example: 102400
+                      uploadTime:
+                        type: string
+                        format: date-time
+                        example: '2025-01-01 10:00:00'
+  /file/download/judge_log/{submissionId}:
+    get:
+      tags:
+        - '8. 文件管理'
+      summary: '8.2 下载评测日志'
+      description: '下载提交的评测日志文件'
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: submissionId
+          in: path
+          required: true
+          schema:
+            type: integer
+          example: 1001
+      responses:
+        '200':
+          description: '评测日志文件流'
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: '在需要鉴权的接口的请求头中添加 "Authorization: Bearer <YOUR_TOKEN>"'
