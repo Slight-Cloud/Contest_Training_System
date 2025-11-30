@@ -17,10 +17,10 @@
       <!-- 筛选栏 -->
       <el-form :inline="true" class="filter-form">
         <el-form-item label="关键字">
-          <el-input v-model="filters.keyword" placeholder="计划标题" clearable @keyup.enter="handleSearch" style="width: 200px;" />
+          <el-input v-model="filters.keyword" placeholder="计划标题" clearable @keyup.enter="handleSearch" class="filter-input-keyword" />
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="filters.status" placeholder="全部" clearable @change="handleSearch" style="width: 120px;">
+          <el-select v-model="filters.status" placeholder="全部" clearable @change="handleSearch" class="filter-select-status">
             <el-option label="未开始" value="SCHEDULED" />
             <el-option label="进行中" value="ONGOING" />
             <el-option label="已结束" value="ENDED" />
@@ -442,33 +442,47 @@ onMounted(() => {
   align-items: center;
 }
 
-.filter-form {
-  margin-bottom: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 12px 8px;
+.filter-input-keyword {
+  width: 200px;
 }
 
-.filter-form :deep(.el-form-item) {
-  margin-bottom: 0;
+.filter-select-status {
+  width: 120px;
 }
 
-/* 表格样式 - 深灰色边框 */
+/* 使用全局统一的 .filter-form 样式 */
+
+/* 表格样式 - 统一暗色主题 */
 .plan-table {
+  --el-table-border-color: var(--border-default);
+  --el-table-header-bg-color: var(--bg-canvas-inset);
+  --el-table-tr-bg-color: var(--bg-surface);
+  --el-table-row-hover-bg-color: var(--bg-hover);
+  --el-table-text-color: var(--text-primary);
+  --el-table-header-text-color: var(--text-secondary);
+  background-color: var(--bg-surface);
   margin-bottom: 16px;
-  border-color: var(--border-default) !important;
 }
 
 .plan-table :deep(.el-table__inner-wrapper::before),
 .plan-table :deep(.el-table__border-left-patch) {
-  background-color: var(--border-default) !important;
+  background-color: var(--border-default);
 }
 
-.plan-table :deep(td),
-.plan-table :deep(th),
-.plan-table :deep(.el-table__cell) {
-  border-color: var(--border-default) !important;
+.plan-table :deep(td.el-table__cell),
+.plan-table :deep(th.el-table__cell) {
+  border-color: var(--border-default);
+  padding: 14px 12px;
+}
+
+.plan-table :deep(th.el-table__cell) {
+  background-color: var(--bg-canvas-inset);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.plan-table :deep(tr.el-table__row:hover td.el-table__cell) {
+  background-color: var(--bg-hover);
 }
 
 .plan-title-cell {
@@ -480,6 +494,7 @@ onMounted(() => {
 
 .plan-title {
   word-break: break-word;
+  color: var(--text-primary);
 }
 
 .time-range {
@@ -489,6 +504,7 @@ onMounted(() => {
   font-size: 12px;
   line-height: 1.5;
   white-space: nowrap;
+  color: var(--text-secondary);
 }
 
 .table-footer {
@@ -498,16 +514,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .filter-form {
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  .filter-form :deep(.el-form-item) {
-    margin-right: 0 !important;
-  }
-
   .plan-table {
     overflow-x: auto;
   }

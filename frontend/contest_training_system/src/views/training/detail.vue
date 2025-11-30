@@ -2,8 +2,8 @@
   <div class="training-detail-page page-shell">
     <div class="page-header">
       <div>
-        <h2 class="page-header__title">{{ planDetail.title || '训练计划详情' }}</h2>
-        <p class="page-header__subtitle">{{ planDetail.description || '查看训练计划的详细信息和进度' }}</p>
+        <h2 class="page-header__title">训练计划详情</h2>
+        <p class="page-header__subtitle">查看训练计划的详细信息和进度</p>
       </div>
       <div class="header-actions">
         <el-button text type="primary" @click="goBack">返回列表</el-button>
@@ -26,8 +26,8 @@
           <el-descriptions-item label="计划ID">{{ planDetail.planId }}</el-descriptions-item>
           <el-descriptions-item label="开始时间">{{ formatDate(planDetail.startTime) }}</el-descriptions-item>
           <el-descriptions-item label="结束时间">{{ formatDate(planDetail.endTime) }}</el-descriptions-item>
-          <el-descriptions-item label="赛事数量">{{ planDetail.contestCount || 0 }}</el-descriptions-item>
-          <el-descriptions-item label="学生数量">{{ planDetail.studentCount || 0 }}</el-descriptions-item>
+          <el-descriptions-item label="赛事数量">{{ planDetail.contests?.length || 0 }}</el-descriptions-item>
+          <el-descriptions-item label="学生数量">{{ planDetail.students?.length || 0 }}</el-descriptions-item>
         </el-descriptions>
       </el-card>
 
@@ -43,31 +43,10 @@
         <el-table :data="planDetail.contests" border>
           <el-table-column prop="contestId" label="赛事ID" width="100" align="center" />
           <el-table-column prop="title" label="赛事名称" min-width="200" />
-          <el-table-column prop="status" label="状态" width="120" align="center">
+          <el-table-column prop="sequence" label="顺序" width="80" align="center" />
+          <el-table-column prop="description" label="描述" min-width="150">
             <template #default="{ row }">
-              <el-tag :type="stateTagType(row.status)">
-                {{ stateLabel(row.status) }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column prop="startTime" label="开始时间" width="180">
-            <template #default="{ row }">
-              {{ formatDate(row.startTime) }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="endTime" label="结束时间" width="180">
-            <template #default="{ row }">
-              {{ formatDate(row.endTime) }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="studentCount" label="学生数" width="120" align="center">
-            <template #default="{ row }">
-              {{ row.studentCount ?? 0 }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="contestCount" label="赛事数" width="120" align="center">
-            <template #default="{ row }">
-              {{ row.contestCount ?? 0 }}
+              {{ row.description || '-' }}
             </template>
           </el-table-column>
           <el-table-column label="操作" width="120" align="center">
@@ -140,7 +119,7 @@ const planDetail = ref<TrainingPlan>({
   planId: 0,
   title: '',
   description: '',
-  status: 'SCHEDULE',
+  status: 'SCHEDULED',
   startTime: '',
   endTime: '',
   creatorId: 0,
@@ -154,8 +133,9 @@ const progressData = ref<any>(null);
 
 const stateLabel = (value?: string) => {
   const map: Record<string, string> = {
-    SCHEDULE: '未开始',
+    SCHEDULED: '未开始',
     ONGOING: '进行中',
+    ENDED: '已结束',
     FINISHED: '已结束',
   };
   return map[value || ''] || '未知';
@@ -163,8 +143,9 @@ const stateLabel = (value?: string) => {
 
 const stateTagType = (value?: string) => {
   const map: Record<string, 'info' | 'success' | 'danger' | 'warning'> = {
-    SCHEDULE: 'info',
+    SCHEDULED: 'info',
     ONGOING: 'success',
+    ENDED: 'warning',
     FINISHED: 'warning',
   };
   return map[value || ''] || 'info';
