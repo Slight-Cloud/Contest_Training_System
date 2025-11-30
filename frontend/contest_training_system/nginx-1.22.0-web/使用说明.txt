@@ -47,7 +47,7 @@ Spring Boot 配置项:
   server.port=8000
 
 如需修改后端地址，编辑: conf/nginx.conf
-找到: proxy_pass http://localhost:8000/api/;
+找到: proxy_pass http://localhost:8000/;
 改为你的实际后端地址
 
 🔧 常用操作
@@ -59,7 +59,7 @@ Spring Boot 配置项:
 
 2. 更新前端代码:
    - 在项目根目录执行: pnpm build
-   - 复制 dist/* 到 html/ 目录
+   - 在项目根目录执行: pnpm build 即可，文件会自动生成到 `html/` 目录中
    - 运行: nginx.exe -s reload
 
 3. 查看日志:
