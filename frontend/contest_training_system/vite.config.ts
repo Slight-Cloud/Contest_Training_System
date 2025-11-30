@@ -19,7 +19,7 @@ export default defineConfig({
     chunkSizeWarningLimit: 1000, // 提高警告阈值到 1000KB
   },
   server: {
-    port: 5173,
+    port: 9999,
     host: 'localhost',
     open: true,
     proxy: {
