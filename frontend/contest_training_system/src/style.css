@@ -29,35 +29,35 @@
   --text-tertiary: #8b949e;       /* 辅助文字 - 中灰 */
   --text-placeholder: #6e7681;    /* 占位符 - 深灰 */
   --text-disabled: #484f58;       /* 禁用文字 */
-  --text-link: #58a6ff;           /* 链接文字 - GitHub 柔和蓝 */
+  --text-link: #4a88da;           /* 链接文字 - 低饱和蓝 */
   
   /* 强调色 - GitHub 柔和蓝色系 (更低饱和度) */
-  --accent-primary: #58a6ff;      /* 主强调色 - GitHub 蓝 */
-  --accent-secondary: #388bfd;    /* 次强调色 */
-  --accent-emphasis: #79c0ff;     /* 高亮强调色 - 悬停时更亮 */
-  --accent-muted: rgba(56, 139, 253, 0.4); /* 柔和强调色 */
-  --accent-subtle: rgba(56, 139, 253, 0.1); /* 微妙强调色 - 更淡 */
+  --accent-primary: #4a88da;      /* 主强调色 - 低饱和蓝 */
+  --accent-secondary: #2c73c8;    /* 次强调色 */
+  --accent-emphasis: #69a0e6;     /* 高亮强调色 - 悬停时更亮 */
+  --accent-muted: rgba(74, 136, 218, 0.4); /* 柔和强调色 */
+  --accent-subtle: rgba(74, 136, 218, 0.1); /* 微妙强调色 - 更淡 */
   
-  /* 状态颜色 - GitHub 风格柔和色调 */
-  --success-fg: #3fb950;
-  --success-emphasis: #238636;
-  --success-muted: rgba(46, 160, 67, 0.4);
-  --success-subtle: rgba(46, 160, 67, 0.15);
+  /* 状态颜色 - GitHub 风格柔和色调 (低饱和) */
+  --success-fg: #349d56;
+  --success-emphasis: #228042;
+  --success-muted: rgba(52, 157, 86, 0.4);
+  --success-subtle: rgba(52, 157, 86, 0.15);
   
-  --attention-fg: #d29922;
-  --attention-emphasis: #9e6a03;
-  --attention-muted: rgba(187, 128, 9, 0.4);
-  --attention-subtle: rgba(187, 128, 9, 0.15);
+  --attention-fg: #c29525;
+  --attention-emphasis: #95720d;
+  --attention-muted: rgba(194, 149, 37, 0.4);
+  --attention-subtle: rgba(194, 149, 37, 0.15);
   
-  --danger-fg: #f85149;
-  --danger-emphasis: #da3633;
-  --danger-muted: rgba(248, 81, 73, 0.4);
-  --danger-subtle: rgba(248, 81, 73, 0.15);
+  --danger-fg: #e5534b;
+  --danger-emphasis: #c8443c;
+  --danger-muted: rgba(229, 83, 75, 0.4);
+  --danger-subtle: rgba(229, 83, 75, 0.15);
   
-  --info-fg: #58a6ff;
-  --info-emphasis: #388bfd;
-  --info-muted: rgba(56, 139, 253, 0.4);
-  --info-subtle: rgba(56, 139, 253, 0.1);
+  --info-fg: #4a88da;
+  --info-emphasis: #2c73c8;
+  --info-muted: rgba(74, 136, 218, 0.4);
+  --info-subtle: rgba(74, 136, 218, 0.1);
   
   /* 阴影 */
   --shadow-sm: 0 1px 2px rgba(1, 4, 9, 0.3);
