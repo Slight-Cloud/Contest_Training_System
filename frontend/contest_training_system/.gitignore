@@ -18,6 +18,7 @@ dist-ssr/
 *.local
 build/
 out/
+nginx-1.22.0-web/html/
 
 # Environment variables
 .env
