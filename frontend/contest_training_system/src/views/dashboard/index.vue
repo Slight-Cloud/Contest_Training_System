@@ -191,12 +191,12 @@ onMounted(() => {
 }
 
 .action-card {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
 }
 
 .action-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--shadow-lg);
 }
 
 .card-content {
@@ -211,13 +211,13 @@ onMounted(() => {
 
 .card-content h3 {
   margin: 0 0 8px;
-  color: #e6edf3;
+  color: var(--text-primary);
   font-size: 18px;
 }
 
 .card-content p {
   margin: 0 0 20px;
-  color: #9fb2c6;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -229,12 +229,12 @@ onMounted(() => {
 .stat-number {
   font-size: 32px;
   font-weight: 700;
-  color: #2f81f7;
+  color: var(--accent-primary);
   margin-bottom: 8px;
 }
 
 .stat-label {
-  color: #9fb2c6;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -266,19 +266,19 @@ onMounted(() => {
 }
 
 .activity-title {
-  color: #e6edf3;
+  color: var(--text-primary);
   font-size: 14px;
   margin-bottom: 4px;
 }
 
 .activity-time {
-  color: #9fb2c6;
+  color: var(--text-tertiary);
   font-size: 12px;
 }
 
 .no-activities {
   text-align: center;
-  color: #9fb2c6;
+  color: var(--text-tertiary);
   padding: 40px 0;
 }
 

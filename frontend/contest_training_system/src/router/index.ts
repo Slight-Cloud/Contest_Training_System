@@ -149,43 +149,57 @@ router.beforeEach(async (to, _from, next) => {
     const userStore = useUserStore();
     const token = userStore.token;
     
-    // 详细调试日志
-    console.log('=== 路由守卫调试 ===');
-    console.log('目标路由:', to.path);
-    console.log('路由名称:', to.name);
-    console.log('完整路径:', to.fullPath);
-    console.log('查询参数:', to.query);
-    console.log('路由参数:', to.params);
-    console.log('路由meta:', to.meta);
-    console.log('用户token:', token ? `${token.substring(0, 20)}...` : 'null');
-    console.log('用户信息:', userStore.userInfo);
-    console.log('用户角色:', userStore.role);
-    console.log('用户ID:', userStore.userId);
+    // 开发环境下的详细调试日志
+    if (import.meta.env.MODE === 'development') {
+        console.log('=== 路由守卫调试 ===');
+        console.log('目标路由:', to.path);
+        console.log('路由名称:', to.name);
+        console.log('完整路径:', to.fullPath);
+        console.log('查询参数:', to.query);
+        console.log('路由参数:', to.params);
+        console.log('路由meta:', to.meta);
+        console.log('用户token:', token ? `${token.substring(0, 20)}...` : 'null');
+        console.log('用户信息:', userStore.userInfo);
+        console.log('用户角色:', userStore.role);
+        console.log('用户ID:', userStore.userId);
+    }
     
     // 不需要认证的路由
     const requiresAuth = to.meta?.requiresAuth !== false;
     
-    if (requiresAuth && !token) {
+    // 公共页面：赛事列表和详情允许匿名访问
+    const publicPages = ['ContestList', 'ContestDetail'];
+    const isPublicPage = publicPages.includes(to.name as string);
+    
+    if (requiresAuth && !isPublicPage && !token) {
         // 需要认证但未登录，跳转到登录页
-        console.log('未登录，跳转到登录页');
+        if (import.meta.env.MODE === 'development') {
+            console.log('未登录，跳转到登录页');
+        }
         next({ name: 'Login', query: { redirect: to.fullPath } });
         return;
     }
     
     if (!requiresAuth && token && (to.name === 'Login' || to.name === 'Register')) {
         // 已登录用户访问登录/注册页，跳转到首页
-        console.log('已登录用户访问登录页，跳转到首页');
+        if (import.meta.env.MODE === 'development') {
+            console.log('已登录用户访问登录页，跳转到首页');
+        }
         next({ name: 'Dashboard' });
         return;
     }
     
     // 如果有token但没有用户信息，先获取用户信息
     if (token && !userStore.userInfo) {
-        console.log('有token但没有用户信息，正在获取...');
+        if (import.meta.env.MODE === 'development') {
+            console.log('有token但没有用户信息，正在获取...');
+        }
         try {
             await userStore.fetchUserProfile();
-            console.log('用户信息获取成功:', userStore.userInfo);
-            console.log('用户角色:', userStore.role);
+            if (import.meta.env.MODE === 'development') {
+                console.log('用户信息获取成功:', userStore.userInfo);
+                console.log('用户角色:', userStore.role);
+            }
         } catch (error) {
             console.error('获取用户信息失败:', error);
             // 获取用户信息失败，清除token并跳转到登录页
@@ -199,16 +213,22 @@ router.beforeEach(async (to, _from, next) => {
     if (to.meta?.roles && Array.isArray(to.meta.roles)) {
         const allowedRoles = to.meta.roles as string[];
         const userRole = userStore.role;
-        console.log('需要角色:', allowedRoles);
-        console.log('当前角色:', userRole);
+        if (import.meta.env.MODE === 'development') {
+            console.log('需要角色:', allowedRoles);
+            console.log('当前角色:', userRole);
+        }
         if (allowedRoles.length > 0 && userRole && !allowedRoles.includes(userRole)) {
-            console.log('角色不匹配，拒绝访问');
+            if (import.meta.env.MODE === 'development') {
+                console.log('角色不匹配，拒绝访问');
+            }
             next({ name: 'Dashboard' });
             return;
         }
     }
     
-    console.log('通过路由守卫');
+    if (import.meta.env.MODE === 'development') {
+        console.log('通过路由守卫');
+    }
     next();
 });
 

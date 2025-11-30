@@ -27,7 +27,7 @@ public class ContestController {
      * 创建赛事 (仅限教师或管理员)
      */
     @PostMapping("/create")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public Result<Long> createContest(@RequestBody @Validated ContestCreateDTO contestCreateDTO) {
         Long contestId = contestService.createContest(contestCreateDTO);
         return Result.success(contestId);
@@ -37,7 +37,7 @@ public class ContestController {
      * 更新赛事 (仅限教师或管理员)
      */
     @PutMapping("/update")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public Result<?> updateContest(@RequestBody @Validated ContestUpdateDTO contestUpdateDTO) {
         contestService.updateContest(contestUpdateDTO);
         return Result.success();
@@ -47,7 +47,7 @@ public class ContestController {
      * 删除赛事 (仅限教师或管理员)
      */
     @DeleteMapping("/{contestId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public Result<?> deleteContest(@PathVariable Long contestId) {
         contestService.deleteContest(contestId);
         return Result.success();

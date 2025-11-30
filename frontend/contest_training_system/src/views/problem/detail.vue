@@ -148,25 +148,19 @@
               <el-tab-pane v-if="canEdit" label="统计" name="statistics">
                 <div class="statistics-section">
                   <el-row :gutter="24">
-                    <el-col :span="6">
+                    <el-col :span="8">
                       <div class="stat-card">
                         <div class="stat-value">{{ statistics.totalSubmissions }}</div>
                         <div class="stat-label">总提交数</div>
                       </div>
                     </el-col>
-                    <el-col :span="6">
+                    <el-col :span="8">
                       <div class="stat-card">
                         <div class="stat-value">{{ statistics.acceptedSubmissions }}</div>
                         <div class="stat-label">通过数</div>
                       </div>
                     </el-col>
-                    <el-col :span="6">
-                      <div class="stat-card">
-                        <div class="stat-value">{{ statistics.passRate }}%</div>
-                        <div class="stat-label">通过率</div>
-                      </div>
-                    </el-col>
-                    <el-col :span="6">
+                    <el-col :span="8">
                       <div class="stat-card">
                         <div class="stat-value">{{ statistics.uniqueUsers }}</div>
                         <div class="stat-label">尝试人数</div>
@@ -246,7 +240,6 @@ const recentSubmissions = ref<Submission[]>([]);
 const statistics = ref({
   totalSubmissions: 0,
   acceptedSubmissions: 0,
-  passRate: 0,
   uniqueUsers: 0,
 });
 
@@ -334,16 +327,9 @@ const viewSubmission = (submissionId: number) => {
   });
 };
 
-// 前往提交页面
+// 前往提交页面（功能开发中，跳转到404）
 const goToSubmit = () => {
-  router.push({
-    name: 'ProblemSubmit',
-    params: { id: problemId },
-    query: {
-      contestId: contestId || undefined,
-      problemTitle: problem.value?.title,
-    },
-  });
+  router.push({ name: 'NotFound' });
 };
 
 // 前往编辑页面
@@ -418,7 +404,7 @@ onMounted(async () => {
   margin: 0 0 16px;
   font-size: 28px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
   display: flex;
   align-items: baseline;
   gap: 8px;
@@ -439,7 +425,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -499,7 +485,7 @@ onMounted(async () => {
 }
 
 .section-content {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
   line-height: 1.8;
   font-size: 15px;
 }
@@ -523,7 +509,7 @@ onMounted(async () => {
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 14px;
   line-height: 1.6;
-  color: #e6edf3;
+  color: var(--text-primary);
 }
 
 .code-block code {
@@ -581,19 +567,19 @@ onMounted(async () => {
 
 .submission-user {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .submission-time {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-tertiary);
 }
 
 .submission-stats {
   display: flex;
   gap: 16px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 
 .solutions-header {
@@ -606,7 +592,7 @@ onMounted(async () => {
 .solutions-header h3 {
   margin: 0;
   font-size: 18px;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .solutions-list {
@@ -619,25 +605,25 @@ onMounted(async () => {
   padding: 24px;
   background: var(--bg-canvas-inset);
   border: 1px solid var(--border-default);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
 }
 
 .solution-title {
   margin: 0 0 16px;
   font-size: 18px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .solution-content {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
   line-height: 1.8;
   margin-bottom: 16px;
 }
 
 .solution-meta {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-tertiary);
 }
 
 .stat-card {
@@ -657,7 +643,7 @@ onMounted(async () => {
 
 .stat-label {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 
 .datasets-section {
@@ -667,7 +653,7 @@ onMounted(async () => {
 .datasets-section h3 {
   margin: 0 0 16px;
   font-size: 18px;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .quick-actions {

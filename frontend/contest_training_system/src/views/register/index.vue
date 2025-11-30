@@ -157,7 +157,7 @@ const goToLogin = () => {
   gap: 56px;
   padding: 40px 60px;
   background: var(--bg-canvas);
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .register-hero {
@@ -168,30 +168,30 @@ const goToLogin = () => {
   margin: 0 0 16px;
   font-size: 42px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .register-hero p {
   margin: 0;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 16px;
 }
 
 .register-card {
   width: 420px;
   background: var(--bg-surface);
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   border: 1px solid var(--border-default);
-  box-shadow: 0 8px 24px rgba(1, 4, 9, 0.15);
-  color: #ffffff;
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
 }
 
 .register-title {
   margin-bottom: 20px;
   text-align: center;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .register-actions {
@@ -207,19 +207,19 @@ const goToLogin = () => {
 }
 
 .register-actions :deep(.el-button--primary:hover) {
-  background: var(--accent-emphasis);
-  border-color: var(--accent-emphasis);
+  background: var(--accent-secondary);
+  border-color: var(--accent-secondary);
 }
 
 .login-link {
   text-align: center;
   margin-top: 16px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 :deep(.el-form-item__label) {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 
 :deep(.el-input__wrapper) {
@@ -227,9 +227,21 @@ const goToLogin = () => {
   border-color: var(--border-default);
 }
 
+:deep(.el-input__wrapper:hover) {
+  border-color: var(--border-emphasis);
+}
+
 :deep(.el-input__wrapper.is-focus) {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 1px var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--accent-subtle);
+}
+
+:deep(.el-input__inner) {
+  color: var(--text-primary);
+}
+
+:deep(.el-input__inner::placeholder) {
+  color: var(--text-placeholder);
 }
 
 @media (max-width: 992px) {

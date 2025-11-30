@@ -22,6 +22,7 @@
             <if test="remark != null">remark = #{remark},</if>
             <if test="timeLimit != null">time_limit = #{timeLimit},</if>
             <if test="memoryLimit != null">memory_limit = #{memoryLimit},</if>
+            <if test="isHidden != null">is_hidden = #{isHidden},</if>
             updated_at = NOW()
         </set>
         WHERE problem_id = #{problemId}

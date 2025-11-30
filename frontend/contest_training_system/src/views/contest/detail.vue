@@ -140,13 +140,6 @@
                   </div>
                 </template>
               </el-table-column>
-              <el-table-column label="通过率" width="120" align="center">
-                <template #default="{ row }">
-                  <span class="pass-rate">
-                    {{ calculatePassRate(row.problemId) }}
-                  </span>
-                </template>
-              </el-table-column>
               <el-table-column label="操作" width="150" align="center" fixed="right">
                 <template #default="{ row }">
                   <el-button
@@ -431,13 +424,6 @@ const getProblemStatusType = (problemId: number) => {
   return 'info';
 };
 
-// 计算通过率
-const calculatePassRate = (_problemId: number) => {
-  // TODO: 根据提交统计计算通过率
-  return '-';
-};
-
-
 // script setup
 const handleTimeFinish = () => {
   // 在倒计时结束时，contest.value.status 仍然是变化前的状态
@@ -494,7 +480,7 @@ onMounted(() => {
   margin: 0 0 16px;
   font-size: 32px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .contest-meta {
@@ -508,7 +494,7 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -538,14 +524,14 @@ onMounted(() => {
 
 .time-label {
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-secondary);
   margin-bottom: 8px;
 }
 
 .time-value {
   font-size: 18px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .countdown {
@@ -553,7 +539,7 @@ onMounted(() => {
 }
 
 .ENDED-text {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-tertiary);
 }
 
 .time-divider {
@@ -563,7 +549,7 @@ onMounted(() => {
 }
 
 .contest-description {
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
   line-height: 1.8;
   font-size: 15px;
 }
@@ -575,8 +561,35 @@ onMounted(() => {
   width: 100%;
 }
 
+/* 题目表格样式 - 使用暗色主题 */
 .problem-table {
   cursor: pointer;
+}
+
+.detail-table {
+  --el-table-border-color: var(--border-default);
+  --el-table-header-bg-color: var(--bg-canvas-inset);
+  --el-table-tr-bg-color: var(--bg-surface);
+  --el-table-row-hover-bg-color: var(--bg-hover);
+  --el-table-text-color: var(--text-primary);
+  --el-table-header-text-color: var(--text-secondary);
+  background-color: var(--bg-surface);
+}
+
+.detail-table :deep(th.el-table__cell),
+.detail-table :deep(td.el-table__cell) {
+  background-color: transparent;
+  border-color: var(--border-default);
+}
+
+.detail-table :deep(th.el-table__cell) {
+  background-color: var(--bg-canvas-inset);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.detail-table :deep(tr.el-table__row:hover td.el-table__cell) {
+  background-color: var(--bg-hover);
 }
 
 
@@ -594,7 +607,7 @@ onMounted(() => {
 
 .problem-title {
   font-weight: 600;
-  color: #e6edf3;
+  color: var(--text-primary);
 }
 
 .limit-cell {
@@ -602,15 +615,15 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 
 .divider {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--text-tertiary);
 }
 
 .pass-rate {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 
 .notice-alert {

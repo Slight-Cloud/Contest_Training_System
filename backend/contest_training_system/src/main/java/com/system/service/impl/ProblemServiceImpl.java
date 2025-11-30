@@ -47,6 +47,7 @@ public class ProblemServiceImpl implements ProblemService {
     }
 
     @Override
+    @Transactional
     public String updateProblem(Long problemId, ProblemUpdateDTO updateDTO) {
         Problem problem = problemMapper.findById(problemId);
         if (problem == null) {

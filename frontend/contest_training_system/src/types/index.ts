@@ -49,7 +49,7 @@ export interface Contest {
   createdAt?: string;
 }
 
-export type ContestStatus =   'SCHEDULED'|'ONGOING' | 'ENDED';
+export type ContestStatus = 'SCHEDULED' | 'ONGOING' | 'ENDED';
 
 export interface ContestProblem {
   problemId: number;

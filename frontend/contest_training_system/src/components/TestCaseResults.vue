@@ -211,7 +211,7 @@ onMounted(fetchTestcases);
 
 .results-header h4 {
   margin: 0;
-  color: #e6edf3;
+  color: var(--text-primary);
   font-size: 18px;
 }
 
@@ -222,7 +222,7 @@ onMounted(fetchTestcases);
 }
 
 .pass-rate {
-  color: #9fb2c6;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -263,7 +263,7 @@ onMounted(fetchTestcases);
 
 .testcase-number {
   font-weight: 600;
-  color: #e6edf3;
+  color: var(--text-primary);
   font-size: 16px;
 }
 
@@ -281,12 +281,12 @@ onMounted(fetchTestcases);
 }
 
 .stat-label {
-  color: #9fb2c6;
+  color: var(--text-secondary);
   font-size: 12px;
 }
 
 .stat-value {
-  color: #e6edf3;
+  color: var(--text-primary);
   font-weight: 600;
   font-size: 14px;
 }
@@ -296,14 +296,14 @@ onMounted(fetchTestcases);
 }
 
 .message-text {
-  color: #f85149;
+  color: var(--danger-fg);
   font-size: 12px;
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   cursor: help;
 }
 
 .testcase-version {
-  color: #7c8db5;
+  color: var(--text-tertiary);
   font-size: 11px;
   text-align: right;
 }
@@ -325,16 +325,16 @@ onMounted(fetchTestcases);
 .stat-number {
   font-size: 24px;
   font-weight: 700;
-  color: #e6edf3;
+  color: var(--text-primary);
   margin-bottom: 8px;
 }
 
 .stat-number.passed {
-  color: #3fb950;
+  color: var(--success-fg);
 }
 
 .stat-card .stat-label {
-  color: #9fb2c6;
+  color: var(--text-secondary);
   font-size: 14px;
 }
 

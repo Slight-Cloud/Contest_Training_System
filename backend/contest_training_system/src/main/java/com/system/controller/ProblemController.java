@@ -24,7 +24,7 @@ public class ProblemController {
      * 3.1 新建题目 - 符合文档
      */
     @PostMapping("/create")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public Result<Problem> createProblem(@RequestBody ProblemCreateDTO createDTO) {
         Problem newProblem = problemService.createProblem(createDTO);
         return Result.success(newProblem);
@@ -36,7 +36,7 @@ public class ProblemController {
      * 文档要求：PUT /problem/update
      */
     @PutMapping("/update")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public Result<String> updateProblem(@RequestBody ProblemUpdateDTO updateDTO) {
         problemService.updateProblem(updateDTO.getProblemId(), updateDTO);
         return Result.success("题目更新成功");
@@ -46,7 +46,7 @@ public class ProblemController {
      * 3.3 删除/隐藏题目 - 需要调整
      */
     @DeleteMapping("/{problemId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public Result<String> deleteProblem(@PathVariable Long problemId) {
         String message = problemService.deleteOrHideProblem(problemId);
         return Result.success(message);

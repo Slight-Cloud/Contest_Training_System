@@ -4,7 +4,7 @@
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="planId">
         insert into training_plan (title, description, creator_id, start_time, end_time, created_at, updated_at)
-        values (#{title}, #{description}, #{status}, #{creatorId}, #{startTime}, #{endTime}, #{createdAt}, #{updatedAt})
+        values (#{title}, #{description}, #{creatorId}, #{startTime}, #{endTime}, #{createdAt}, #{updatedAt})
     </insert>
 
     <update id="update">
@@ -12,7 +12,6 @@
         <set>
             <if test="title != null">title = #{title},</if>
             <if test="description != null">description = #{description},</if>
-            <if test="status != null">status = #{status},</if>
             <if test="startTime != null">start_time = #{startTime},</if>
             <if test="endTime != null">end_time = #{endTime},</if>
             updated_at = #{updatedAt}

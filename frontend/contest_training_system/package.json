@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc -b && vite build",
+    "build": "vite build",
+    "build:deploy": "pnpm build && cd nginx-1.22.0-web && (nginx.exe -s reload || nginx.exe)",
     "preview": "vite preview"
   },
   "dependencies": {

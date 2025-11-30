@@ -136,8 +136,9 @@ const users = ref<UserItem[]>([]);
 const loading = ref(false);
 
 const headerStyle = {
-  background: 'rgba(13, 17, 23, 0.65)',
-  color: '#cdd9e5',
+  background: 'var(--bg-canvas-inset)',
+  color: 'var(--text-secondary)',
+  fontWeight: '600',
 };
 
 const fetchUsers = async () => {
@@ -221,15 +222,33 @@ onMounted(fetchUsers);
   gap: 24px;
 }
 
-.filter-form {
-  margin-bottom: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+/* 使用全局统一的 .filter-form 样式 */
+
+/* 表格样式 - 统一暗色主题 */
+.user-table {
+  --el-table-border-color: var(--border-default);
+  --el-table-header-bg-color: var(--bg-canvas-inset);
+  --el-table-tr-bg-color: var(--bg-surface);
+  --el-table-row-hover-bg-color: var(--bg-hover);
+  --el-table-text-color: var(--text-primary);
+  --el-table-header-text-color: var(--text-secondary);
+  background-color: var(--bg-surface);
 }
 
-.filter-form :deep(.el-form-item) {
-  margin-bottom: 0;
+.user-table :deep(td.el-table__cell),
+.user-table :deep(th.el-table__cell) {
+  border-color: var(--border-default);
+  padding: 14px 12px;
+}
+
+.user-table :deep(th.el-table__cell) {
+  background-color: var(--bg-canvas-inset);
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.user-table :deep(tr.el-table__row:hover td.el-table__cell) {
+  background-color: var(--bg-hover);
 }
 
 .user-info {
@@ -239,15 +258,15 @@ onMounted(fetchUsers);
 }
 
 .user-name {
-  font-weight: 700;
-  color: #ffffff;
+  font-weight: 600;
+  color: var(--text-primary);
   font-size: 15px;
   line-height: 1.4;
 }
 
 .user-email {
   font-weight: 500;
-  color: #c9d1d9;
+  color: var(--text-secondary);
   font-size: 13px;
   line-height: 1.3;
 }
@@ -258,106 +277,22 @@ onMounted(fetchUsers);
   justify-content: flex-end;
 }
 
-/* 表格内容样式优化 */
-.user-table :deep(.el-table__cell) {
-  color: #ffffff !important;
-  font-weight: 500 !important;
-  padding: 12px 8px !important;
-}
-
+/* 标签样式优化 */
 .user-table :deep(.el-table__cell .el-tag) {
-  font-weight: 600 !important;
-  font-size: 12px !important;
+  font-weight: 600;
+  font-size: 12px;
 }
 
 /* 用户详情抽屉样式优化 */
 .user-detail-drawer :deep(.el-descriptions-item__label) {
-  color: #ffffff !important;
-  font-weight: 600 !important;
-  font-size: 14px !important;
+  color: var(--text-secondary);
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .user-detail-drawer :deep(.el-descriptions-item__content) {
-  color: #ffffff !important;
-  font-weight: 500 !important;
-  font-size: 14px !important;
-}
-
-/* 表格行悬停效果 */
-.user-table :deep(.el-table__row:hover .el-table__cell) {
-  background-color: rgba(255, 255, 255, 0.05) !important;
-}
-
-/* 表格边框优化 */
-.user-table :deep(.el-table--border .el-table__cell) {
-  border-color: var(--border-default) !important;
-}
-
-/* 表格头部样式 */
-.user-table :deep(.el-table__header .el-table__cell) {
-
-  color: #ffffff !important;
-  font-weight: 600 !important;
-  font-size: 14px !important;
-}
-
-/* 操作按钮样式优化 */
-.user-table :deep(.el-button--text) {
-  color: #539bf5 !important;
-  font-weight: 600 !important;
-  font-size: 13px !important;
-}
-
-.user-table :deep(.el-button--text:hover) {
-  color: #6cb6ff !important;
-  background-color: rgba(83, 155, 245, 0.1) !important;
-}
-
-/* 角色标签样式优化 */
-.user-table :deep(.el-tag--info) {
-  background-color: rgba(83, 155, 245, 0.2) !important;
-  border-color: var(--accent-primary) !important;
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-
-/* 状态标签样式优化 */
-.user-table :deep(.el-tag--success) {
-  background-color: rgba(70, 149, 74, 0.2) !important;
-  border-color: var(--success-emphasis) !important;
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-
-.user-table :deep(.el-tag--danger) {
-  background-color: rgba(218, 54, 51, 0.2) !important;
-  border-color: var(--danger-emphasis) !important;
-  color: #ffffff !important;
-  font-weight: 600 !important;
-}
-
-/* 学号列样式 */
-.user-table :deep(.el-table__cell:has(.student_id)) {
-  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
-  font-size: 13px !important;
-  color: #c9d1d9 !important;
-}
-
-/* 注册时间样式 */
-.user-table :deep(.el-table__cell:has(.created_at)) {
-  font-size: 13px !important;
-  color: #c9d1d9 !important;
-}
-
-@media (max-width: 768px) {
-  .filter-form {
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  .filter-form :deep(.el-form-item) {
-    margin-right: 0 !important;
-  }
+  color: var(--text-primary);
+  font-weight: 500;
+  font-size: 14px;
 }
 </style>

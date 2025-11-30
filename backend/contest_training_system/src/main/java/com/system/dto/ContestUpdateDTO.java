@@ -1,6 +1,7 @@
 package com.system.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.system.config.FlexibleLocalDateTimeDeserializer;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -22,11 +23,11 @@ public class ContestUpdateDTO {
     private String title;
     private String description;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     @Future(message = "开始时间必须是未来的时间")
     private LocalDateTime startTime;
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     @Future(message = "结束时间必须是未来的时间")
     private LocalDateTime endTime;
     private String password;

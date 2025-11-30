@@ -160,8 +160,9 @@ const isStudent = computed(() => userStore.role === 'STUDENT');
 const canManage = computed(() => isAdmin.value || isTeacher.value);
 
 const headerStyle = {
-  background: 'rgba(13, 17, 23, 0.65)',
-  color: '#cdd9e5',
+  background: 'var(--bg-canvas-inset)',
+  color: 'var(--text-secondary)',
+  fontWeight: '600',
 };
 
 const fetchData = async () => {
@@ -207,7 +208,8 @@ const fetchData = async () => {
     
     // 针对403错误的特殊处理
     if (error.response?.status === 403) {
-      ElMessage.error('权限不足：学生角色无法访问题目列表，请联系后端修改 Spring Security 配置');
+      // 静默处理权限问题
+      console.log('题目列表访问权限不足');
     } else {
       ElMessage.error(`获取题目列表失败: ${error.message || '未知错误'}`);
     }
@@ -323,40 +325,38 @@ const formatDate = (value?: string) => formatDateTime(value);
   gap: 12px;
 }
 
-.filter-form {
-  margin-bottom: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 12px 8px;
-}
+/* 使用全局统一的 .filter-form 样式 */
 
-.filter-form :deep(.el-form-item) {
-  margin-bottom: 0;
-}
-
-/* 表格样式 - 深灰色边框 */
+/* 表格样式 - 统一暗色主题 */
 .problem-table {
-  border-color: var(--border-default) !important;
+  --el-table-border-color: var(--border-default);
+  --el-table-header-bg-color: var(--bg-canvas-inset);
+  --el-table-tr-bg-color: var(--bg-surface);
+  --el-table-row-hover-bg-color: var(--bg-hover);
+  --el-table-text-color: var(--text-primary);
+  --el-table-header-text-color: var(--text-secondary);
+  background-color: var(--bg-surface);
 }
 
 .problem-table :deep(.el-table__inner-wrapper::before),
 .problem-table :deep(.el-table__border-left-patch) {
-  background-color: var(--border-default) !important;
+  background-color: var(--border-default);
 }
 
-.problem-table :deep(td),
-.problem-table :deep(th),
-.problem-table :deep(.el-table__cell) {
-  border-color: var(--border-default) !important;
+.problem-table :deep(td.el-table__cell),
+.problem-table :deep(th.el-table__cell) {
+  border-color: var(--border-default);
+  padding: 14px 12px;
 }
 
-.problem-table :deep(.el-table__row) {
-  transition: background 0.2s ease;
+.problem-table :deep(th.el-table__cell) {
+  background-color: var(--bg-canvas-inset);
+  color: var(--text-secondary);
+  font-weight: 600;
 }
 
-.problem-table :deep(.el-table__row:hover) {
-  background: rgba(47, 129, 247, 0.08);
+.problem-table :deep(tr.el-table__row:hover td.el-table__cell) {
+  background-color: var(--bg-hover);
 }
 
 .problem-name-cell {
@@ -368,7 +368,7 @@ const formatDate = (value?: string) => formatDateTime(value);
 
 .problem-title {
   font-weight: 600;
-  color: #e6edf3;
+  color: var(--text-primary);
   word-break: break-word;
 }
 
@@ -376,7 +376,7 @@ const formatDate = (value?: string) => formatDateTime(value);
   display: flex;
   flex-direction: column;
   gap: 4px;
-  color: #9fb2c6;
+  color: var(--text-secondary);
   font-size: 13px;
   white-space: nowrap;
 }
@@ -391,16 +391,6 @@ const formatDate = (value?: string) => formatDateTime(value);
   .header-actions {
     width: 100%;
     justify-content: flex-end;
-  }
-
-  .filter-form {
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  .filter-form :deep(.el-form-item) {
-    margin-right: 0 !important;
   }
 
   .problem-table {

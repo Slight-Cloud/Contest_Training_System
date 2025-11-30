@@ -69,7 +69,6 @@ public class TrainingPlanServiceImpl implements TrainingPlanService {
         TrainingPlan plan = new TrainingPlan();
         BeanUtils.copyProperties(createDTO, plan);
         plan.setCreatorId(UserContext.getUserId());
-        plan.setStatus("NOT_STARTED"); // 初始状态固定为“未开始”
         plan.setCreatedAt(LocalDateTime.now());
         plan.setUpdatedAt(LocalDateTime.now());
         trainingPlanMapper.insert(plan);

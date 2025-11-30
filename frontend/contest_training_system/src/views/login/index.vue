@@ -79,7 +79,7 @@ const goToRegister = () => {
   gap: 56px;
   padding: 40px 60px;
   background: var(--bg-canvas);
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .login-hero {
@@ -90,30 +90,30 @@ const goToRegister = () => {
   margin: 0 0 16px;
   font-size: 42px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .login-hero p {
   margin: 0;
   line-height: 1.7;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 16px;
 }
 
 .login-card {
   width: 380px;
   background: var(--bg-surface);
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   border: 1px solid var(--border-default);
-  box-shadow: 0 8px 24px rgba(1, 4, 9, 0.15);
-  color: #ffffff;
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
 }
 
 .login-title {
   margin-bottom: 20px;
   text-align: center;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .login-actions {
@@ -129,19 +129,19 @@ const goToRegister = () => {
 }
 
 .login-actions :deep(.el-button--primary:hover) {
-  background: var(--accent-emphasis);
-  border-color: var(--accent-emphasis);
+  background: var(--accent-secondary);
+  border-color: var(--accent-secondary);
 }
 
 .register-link {
   text-align: center;
   margin-top: 16px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 :deep(.el-form-item__label) {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 
 :deep(.el-input__wrapper) {
@@ -149,18 +149,22 @@ const goToRegister = () => {
   border-color: var(--border-default);
 }
 
+:deep(.el-input__wrapper:hover) {
+  border-color: var(--border-emphasis);
+}
+
 :deep(.el-input__wrapper.is-focus) {
   border-color: var(--accent-primary);
-  box-shadow: 0 0 0 1px var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--accent-subtle);
 }
 
 :deep(.el-input__inner) {
-  color: #ffffff;
+  color: var(--text-primary);
   background: transparent;
 }
 
 :deep(.el-input__inner::placeholder) {
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--text-placeholder);
 }
 
 @media (max-width: 992px) {

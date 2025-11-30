@@ -1,9 +1,9 @@
 <template>
   <div class="error-page">
     <div class="error-content">
-      <div class="error-code">404</div>
-      <h1 class="error-title">页面未找到</h1>
-      <p class="error-description">抱歉，您访问的页面不存在或已被删除</p>
+      <div class="error-code">🚧</div>
+      <h1 class="error-title">功能开发中</h1>
+      <p class="error-description">该功能正在开发中，敬请期待。</p>
       <div class="error-actions">
         <el-button type="primary" @click="goHome">返回首页</el-button>
         <el-button @click="goBack">返回上一页</el-button>
@@ -33,7 +33,7 @@ const goBack = () => {
   align-items: center;
   justify-content: center;
   background: var(--bg-canvas);
-  color: #ffffff;
+  color: var(--text-primary);
   padding: 40px;
 }
 
@@ -48,19 +48,19 @@ const goBack = () => {
   color: var(--accent-primary);
   line-height: 1;
   margin-bottom: 24px;
-  text-shadow: 0 4px 12px rgba(83, 155, 245, 0.3);
+  text-shadow: 0 4px 12px rgba(88, 166, 255, 0.3);
 }
 
 .error-title {
   font-size: 32px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
   margin: 0 0 16px;
 }
 
 .error-description {
   font-size: 16px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   margin: 0 0 32px;
   line-height: 1.6;
 }

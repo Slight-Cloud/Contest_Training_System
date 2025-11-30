@@ -13,7 +13,7 @@ public class TrainingPlan {
     private Long planId; // 训练计划主键
     private String title; // 计划标题
     private String description; // 训练计划说明
-    private String status; // NOT_STARTED/ONGOING/COMPLETED
+    // status字段是动态计算的，不存储在数据库中
     private Long creatorId; // 创建者用户ID
     private LocalDateTime startTime; // 开始时间
     private LocalDateTime endTime; // 结束时间

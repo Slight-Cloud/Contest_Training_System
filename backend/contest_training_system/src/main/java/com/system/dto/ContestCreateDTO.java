@@ -9,7 +9,8 @@ import lombok.Data;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.system.config.FlexibleLocalDateTimeDeserializer;
 
 /**
  * DTO for creating a contest.
@@ -25,12 +26,12 @@ public class ContestCreateDTO {
 
     @NotNull(message = "开始时间不能为空")
     @Future(message = "开始时间必须是未来的时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime startTime;
 
     @NotNull(message = "结束时间不能为空")
     @Future(message = "结束时间必须是未来的时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonDeserialize(using = FlexibleLocalDateTimeDeserializer.class)
     private LocalDateTime endTime;
 
     private String password;

@@ -16,8 +16,8 @@ public class TrainingPlanQueryDTO {
     @NonNull
     @Min(value = 1, message = "每页数量不能小于1")
     private int pageSize = 10;
-    private String status;
     private Long creatorId;
     private String keyword;
+    private String status;  // 计划状态：SCHEDULED/ONGOING/ENDED
     private String sortBy;
 }

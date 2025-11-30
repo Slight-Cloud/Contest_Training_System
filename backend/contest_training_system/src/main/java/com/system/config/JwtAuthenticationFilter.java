@@ -38,6 +38,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         jwt = authHeader.substring(7); // "Bearer " 后面的部分
         try {
+            // 检查token是否过期
+            if (JwtUtil.isExpired(jwt)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
+            
             userId = JwtUtil.getUserId(jwt);
             role = JwtUtil.getRole(jwt); // 解析角色
         } catch (Exception e) {

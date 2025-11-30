@@ -32,7 +32,7 @@ public class TrainingPlanController {
      * @return 包含新计划ID的结果
      */
     @PostMapping("/create")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public Result<Long> createTrainingPlan(@Validated @RequestBody TrainingPlanCreateDTO createDTO) {
         Long planId = trainingPlanService.createTrainingPlan(createDTO);
         return Result.success(planId);
@@ -44,7 +44,7 @@ public class TrainingPlanController {
      * @return 操作结果
      */
     @PutMapping("/update")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public Result<?> updateTrainingPlan(@Validated @RequestBody TrainingPlanUpdateDTO updateDTO) {
         trainingPlanService.updateTrainingPlan(updateDTO);
         return Result.success();
@@ -56,7 +56,7 @@ public class TrainingPlanController {
      * @return 操作结果
      */
     @DeleteMapping("/{planId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'TEACHER')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('TEACHER')")
     public Result<?> deleteTrainingPlan(@PathVariable Long planId) {
         trainingPlanService.deleteTrainingPlan(planId);
         return Result.success();
