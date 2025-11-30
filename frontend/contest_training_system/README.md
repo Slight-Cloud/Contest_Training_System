@@ -32,7 +32,7 @@ pnpm install
 pnpm dev
 ```
 
-访问: http://localhost:5173
+访问: http://localhost:9999
 
 ### 生产构建
 
