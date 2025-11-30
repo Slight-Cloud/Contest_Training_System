@@ -145,7 +145,7 @@ const handleLogout = () => {
 .layout-aside {
   width: 260px;
   background: var(--bg-canvas-inset);
-  color: #ffffff;
+  color: var(--text-primary);
   display: flex;
   flex-direction: column;
   padding: 24px 20px 28px;
@@ -163,13 +163,13 @@ const handleLogout = () => {
   font-size: 18px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .layout-aside__role {
-  background: rgba(83, 155, 245, 0.15);
+  background: var(--accent-subtle);
   border: 1px solid var(--accent-primary);
-  color: var(--accent-emphasis);
+  color: var(--accent-primary);
 }
 
 .layout-aside__scroll {
@@ -179,28 +179,33 @@ const handleLogout = () => {
 .layout-aside__footer {
   margin-top: 18px;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-tertiary);
   text-align: center;
 }
 
 .layout-menu {
   border-right: none;
   background-color: transparent;
-  --el-menu-hover-bg-color: var(--bg-canvas-subtle);
+  --el-menu-hover-bg-color: var(--bg-hover);
 }
 
 .menu-item {
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   margin: 4px 0;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.8);
-  transition: all 0.2s ease;
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
 }
 
 .menu-item.is-active,
 .menu-item:hover {
-  background: var(--bg-canvas-subtle);
-  color: #ffffff;
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.menu-item.is-active {
+  background: var(--accent-subtle);
+  color: var(--accent-primary);
 }
 
 .layout-content {
@@ -216,7 +221,11 @@ const handleLogout = () => {
   border-bottom: 1px solid var(--border-muted);
   flex-wrap: wrap;
   gap: 24px;
-  height: auto !important;
+}
+
+/* Override element-plus's default header height with a more specific selector */
+.layout-container .layout-header {
+  height: auto;
 }
 
 .layout-header__info {
@@ -231,12 +240,12 @@ const handleLogout = () => {
   margin: 0;
   font-size: 28px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .layout-header__subtitle {
   margin: 0;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 14px;
   max-width: 520px;
 }
@@ -252,9 +261,9 @@ const handleLogout = () => {
 }
 
 .layout-header__actions :deep(.el-tag.el-tag--info) {
-  background: rgba(83, 155, 245, 0.15);
+  background: var(--accent-subtle);
   border-color: var(--accent-primary);
-  color: var(--accent-emphasis);
+  color: var(--accent-primary);
 }
 
 .layout-header__actions :deep(.el-button.is-plain) {
@@ -264,7 +273,7 @@ const handleLogout = () => {
 }
 
 .layout-header__actions :deep(.el-button.is-plain:hover) {
-  background: var(--bg-canvas-subtle);
+  background: var(--accent-subtle);
   border-color: var(--accent-primary);
   color: var(--accent-emphasis);
 }
@@ -272,7 +281,7 @@ const handleLogout = () => {
 .layout-header__avatar {
   background: var(--accent-primary);
   font-weight: 600;
-  color: #fff;
+  color: #ffffff;
 }
 
 .layout-header__welcome {
@@ -284,12 +293,12 @@ const handleLogout = () => {
 
 .layout-header__name {
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .layout-header__greet {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
 }
 
 .layout-main {

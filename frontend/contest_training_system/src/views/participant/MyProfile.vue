@@ -38,7 +38,7 @@
           ref="profileFormRef" 
           :model="editForm" 
           :rules="profileRules" 
-          label-width="100px"
+          :label-width="formLabelWidth"
         >
           <el-row :gutter="24">
             <el-col :span="12">
@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { ElMessage, type FormInstance, type FormRules } from 'element-plus';
 import { getUserProfile, updateUserInfo } from '@/api/user';
 import { useUserStore } from '@/store/user';
@@ -111,6 +111,16 @@ const editForm = reactive({
   phoneNumber: '',
   password: '',
 });
+
+const formLabelWidth = ref('100px');
+
+const updateLabelWidth = () => {
+  if (window.innerWidth <= 768) {
+    formLabelWidth.value = '80px';
+  } else {
+    formLabelWidth.value = '100px';
+  }
+};
 
 const roleLabel = computed(() => {
   const roleMap: Record<string, string> = {
@@ -198,7 +208,15 @@ const formatDate = (dateStr?: string) => {
   return dateStr.replace('T', ' ').replace(/\.\d{3}Z?$/, '');
 };
 
-onMounted(fetchProfile);
+onMounted(() => {
+  fetchProfile();
+  window.addEventListener('resize', updateLabelWidth);
+  updateLabelWidth(); // Initial check
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateLabelWidth);
+});
 </script>
 
 <style scoped>
@@ -211,35 +229,12 @@ onMounted(fetchProfile);
   gap: 12px;
 }
 
-/* 移除自定义样式，使用全局统一样式 */
-
-:deep(.el-input__wrapper) {
-  background: var(--bg-canvas-inset);
-  border-color: var(--border-default);
-}
-
-:deep(.el-input__wrapper.is-focus) {
-  border-color: var(--accent-primary);
-  box-shadow: 0 0 0 1px var(--accent-primary);
-}
-
-:deep(.el-input__inner) {
-  color: #ffffff;
-  background: transparent;
-}
-
-:deep(.el-input__inner::placeholder) {
-  color: rgba(255, 255, 255, 0.5);
-}
+/* 使用全局统一样式，不再覆盖 */
 
 @media (max-width: 768px) {
   .header-actions {
     width: 100%;
     justify-content: flex-end;
-  }
-  
-  .participant-profile :deep(.el-form-item__label) {
-    width: 80px !important;
   }
 }
 </style>

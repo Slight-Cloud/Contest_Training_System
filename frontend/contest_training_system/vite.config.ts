@@ -12,8 +12,14 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  // 构建配置：直接输出到 nginx 的 html 目录
+  build: {
+    outDir: 'nginx-1.22.0-web/html',
+    emptyOutDir: true, // 构建前清空目录
+    chunkSizeWarningLimit: 1000, // 提高警告阈值到 1000KB
+  },
   server: {
-    port: 4000,
+    port: 5173,
     host: '127.0.0.1',
     open: true,
     proxy: {

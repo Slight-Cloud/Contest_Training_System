@@ -14,29 +14,29 @@
     <el-card class="page-card">
       <el-form :inline="true" :model="filters" label-suffix=":" class="filter-form">
         <el-form-item label="关键字">
-          <el-input v-model="filters.keyword" placeholder="按名称搜索" clearable @keyup.enter="handleSearch" style="width: 200px;" />
+          <el-input v-model="filters.keyword" placeholder="按名称搜索" clearable @keyup.enter="handleSearch" class="filter-input-keyword" />
         </el-form-item>
         <el-form-item label="可见性">
-          <el-select v-model="filters.visibility" placeholder="全部" clearable @change="handleSearch" style="width: 120px;">
+          <el-select v-model="filters.visibility" placeholder="全部" clearable @change="handleSearch" class="filter-select-visibility">
             <el-option label="公开" value="PUBLIC" />
             <el-option label="私有" value="PRIVATE" />
           </el-select>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select v-model="filters.status" placeholder="全部" clearable @change="handleSearch" style="width: 120px;">
+          <el-select v-model="filters.status" placeholder="全部" clearable @change="handleSearch" class="filter-select-status">
             <el-option label="未开始" value="SCHEDULED" />
             <el-option label="进行中" value="ONGOING" />
             <el-option label="已结束" value="ENDED" />
           </el-select>
         </el-form-item>
         <el-form-item v-if="canManage" label="显示状态">
-          <el-select v-model="filters.state" placeholder="全部" clearable @change="handleSearch" style="width: 120px;">
+          <el-select v-model="filters.state" placeholder="全部" clearable @change="handleSearch" class="filter-select-state">
             <el-option label="使用中" value="USING" />
             <el-option label="已隐藏" value="HIDDEN" />
           </el-select>
         </el-form-item>
         <el-form-item label="排序">
-          <el-select v-model="filters.sortBy" placeholder="默认排序" @change="handleSearch" style="width: 140px;">
+          <el-select v-model="filters.sortBy" placeholder="默认排序" @change="handleSearch" class="filter-select-sortby">
             <el-option label="ID升序" value="id_asc" />
             <el-option label="ID降序" value="id_desc" />
             <el-option label="开始时间升序" value="start_asc" />
@@ -275,8 +275,9 @@ const canManage = computed(() => isAdmin.value || isTeacher.value);
 const canJoin = computed(() => isStudent.value);
 
 const headerStyle = {
-  background: 'rgba(13, 17, 23, 0.65)',
-  color: '#cdd9e5',
+  background: 'var(--bg-canvas-inset)',
+  color: 'var(--text-secondary)',
+  fontWeight: '600',
 };
 
 const fetchData = async () => {
@@ -484,13 +485,17 @@ const transformContestItem = (item: Record<string, unknown>): ContestItem => {
 
 const deriveStatus = (item: Record<string, unknown>) => {
   if (typeof item.status === 'string' && item.status.trim()) {
-    return item.status.toUpperCase();
+    const status = item.status.toUpperCase();
+    // 统一映射到后端使用的状态枚举
+    if (status === 'UPCOMING') return 'SCHEDULED';
+    if (status === 'FINISHED') return 'ENDED';
+    return status;
   }
   const now = Date.now();
   const start = Date.parse(String(item.startTime || item.start_time || ''));
   const end = Date.parse(String(item.endTime || item.end_time || ''));
-  if (!Number.isNaN(start) && now < start) return 'UPCOMING';
-  if (!Number.isNaN(end) && now > end) return 'FINISHED';
+  if (!Number.isNaN(start) && now < start) return 'SCHEDULED';
+  if (!Number.isNaN(end) && now > end) return 'ENDED';
   return 'ONGOING';
 };
 
@@ -661,40 +666,38 @@ onMounted(fetchData);
   gap: 12px;
 }
 
-.filter-form {
-  margin-bottom: 16px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 12px 8px;
-}
+/* 使用全局统一的 .filter-form 样式 */
 
-.filter-form :deep(.el-form-item) {
-  margin-bottom: 0;
-}
-
-/* 表格样式 - 深灰色边框 */
+/* 表格样式 - 统一暗色主题 */
 .contest-table {
-  border-color: var(--border-default) !important;
+  --el-table-border-color: var(--border-default);
+  --el-table-header-bg-color: var(--bg-canvas-inset);
+  --el-table-tr-bg-color: var(--bg-surface);
+  --el-table-row-hover-bg-color: var(--bg-hover);
+  --el-table-text-color: var(--text-primary);
+  --el-table-header-text-color: var(--text-secondary);
+  background-color: var(--bg-surface);
 }
 
 .contest-table :deep(.el-table__inner-wrapper::before),
 .contest-table :deep(.el-table__border-left-patch) {
-  background-color: var(--border-default) !important;
+  background-color: var(--border-default);
 }
 
-.contest-table :deep(td),
-.contest-table :deep(th),
-.contest-table :deep(.el-table__cell) {
-  border-color: var(--border-default) !important;
+.contest-table :deep(td.el-table__cell),
+.contest-table :deep(th.el-table__cell) {
+  border-color: var(--border-default);
+  padding: 14px 12px;
 }
 
-.contest-table :deep(.el-table__row) {
-  transition: background 0.2s ease;
+.contest-table :deep(th.el-table__cell) {
+  background-color: var(--bg-canvas-inset);
+  color: var(--text-secondary);
+  font-weight: 600;
 }
 
-.contest-table :deep(.el-table__row:hover) {
-  background: rgba(47, 129, 247, 0.08);
+.contest-table :deep(tr.el-table__row:hover td.el-table__cell) {
+  background-color: var(--bg-hover);
 }
 
 .contest-name-cell {
@@ -706,7 +709,7 @@ onMounted(fetchData);
 
 .contest-title {
   font-weight: 600;
-  color: #e6edf3;
+  color: var(--text-primary);
   word-break: break-word;
 }
 
@@ -714,7 +717,7 @@ onMounted(fetchData);
   display: flex;
   flex-direction: column;
   gap: 6px;
-  color: #9fb2c6;
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
@@ -734,16 +737,6 @@ onMounted(fetchData);
   .header-actions {
     width: 100%;
     justify-content: flex-end;
-  }
-
-  .filter-form {
-    display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
-    gap: 12px;
-  }
-
-  .filter-form :deep(.el-form-item) {
-    margin-right: 0 !important;
   }
 
   .contest-table {

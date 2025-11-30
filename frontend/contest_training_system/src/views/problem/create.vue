@@ -13,7 +13,7 @@
       </div>
     </div>
 
-    <el-form ref="formRef" :model="form" :rules="rules" label-width="120px" class="problem-form">
+    <el-form ref="formRef" :model="form" :rules="rules" :label-width="formLabelWidth" class="problem-form">
       <el-card class="page-card">
         <template #header>
           <span>基本信息</span>
@@ -158,7 +158,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessage, type FormInstance, type FormRules, type UploadInstance } from 'element-plus';
 import { UploadFilled, Document } from '@element-plus/icons-vue';
@@ -179,6 +179,16 @@ const problemId = computed(() => {
   const idParam = route.params.id;
   return Array.isArray(idParam) ? Number(idParam[0]) : Number(idParam);
 });
+
+const formLabelWidth = ref('120px');
+
+const updateLabelWidth = () => {
+  if (window.innerWidth <= 768) {
+    formLabelWidth.value = '100px';
+  } else {
+    formLabelWidth.value = '120px';
+  }
+};
 
 const form = reactive<ProblemPayload>({
   title: '',
@@ -325,6 +335,12 @@ onMounted(() => {
   if (isEdit.value) {
     fetchProblemDetail();
   }
+  window.addEventListener('resize', updateLabelWidth);
+  updateLabelWidth(); // initial check
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', updateLabelWidth);
 });
 </script>
 
@@ -344,7 +360,7 @@ onMounted(() => {
 
 .unit-text {
   margin-left: 8px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
@@ -357,14 +373,14 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 8px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
   font-size: 14px;
 }
 
 :deep(.el-upload-dragger) {
   background: var(--bg-canvas-inset);
   border: 2px dashed var(--border-default);
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
 }
 
 :deep(.el-upload-dragger:hover) {
@@ -372,23 +388,27 @@ onMounted(() => {
 }
 
 :deep(.el-upload__text) {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--text-secondary);
+}
+
+:deep(.el-upload__text em) {
+  color: var(--accent-primary);
 }
 
 :deep(.el-upload__tip) {
-  color: rgba(255, 255, 255, 0.6);
+  color: var(--text-tertiary);
   font-size: 12px;
   line-height: 1.5;
+}
+
+:deep(.el-icon--upload) {
+  color: var(--text-tertiary);
 }
 
 @media (max-width: 768px) {
   .header-actions {
     width: 100%;
     justify-content: flex-end;
-  }
-  
-  .problem-form :deep(.el-form-item__label) {
-    width: 100px !important;
   }
 }
 </style>
