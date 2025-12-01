@@ -1,0 +1,97 @@
+# ==========================================
+# IDE / Editor
+# ==========================================
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+.project
+.classpath
+.settings/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# ==========================================
+# OS Generated
+# ==========================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# ==========================================
+# Backend (Java / Maven)
+# ==========================================
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+hs_err_pid*
+replay_pid*
+
+# ==========================================
+# Frontend (Node.js / Vite)
+# ==========================================
+node_modules/
+dist/
+dist-ssr/
+*.local
+.pnpm-store/
+.npm/
+.yarn/
+
+# Nginx binary distribution (should not be in repo)
+nginx-*/
+!nginx.conf
+
+# Build cache
+.cache/
+.temp/
+.vite/
+*.tsbuildinfo
+
+# ==========================================
+# Environment & Secrets
+# ==========================================
+.env
+.env.*
+!.env.example
+application-local.yml
+application-prod.yml
+
+# ==========================================
+# Logs
+# ==========================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ==========================================
+# Test & Coverage
+# ==========================================
+coverage/
+*.lcov
+.nyc_output/
+
+# ==========================================
+# Misc
+# ==========================================
+*.tmp
+*.temp
+*.swp
+*~
