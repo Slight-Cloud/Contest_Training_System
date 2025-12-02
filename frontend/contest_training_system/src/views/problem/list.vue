@@ -361,15 +361,17 @@ const formatDate = (value?: string) => formatDateTime(value);
 
 .problem-name-cell {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;  /* 改为垂直布局 */
+  gap: 8px;
   min-width: 0;
+  width: 100%;
 }
 
 .problem-title {
   font-weight: 600;
   color: var(--text-primary);
   word-break: break-word;
+  line-height: 1.5;
 }
 
 .limit-column {
@@ -378,7 +380,7 @@ const formatDate = (value?: string) => formatDateTime(value);
   gap: 4px;
   color: var(--text-secondary);
   font-size: 13px;
-  white-space: nowrap;
+  line-height: 1.5;
 }
 
 .table-footer {

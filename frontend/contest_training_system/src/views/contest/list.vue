@@ -702,15 +702,17 @@ onMounted(fetchData);
 
 .contest-name-cell {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;  /* 改为垂直布局 */
+  gap: 8px;
   min-width: 0;
+  width: 100%;
 }
 
 .contest-title {
   font-weight: 600;
   color: var(--text-primary);
   word-break: break-word;
+  line-height: 1.5;
 }
 
 .time-column {
@@ -718,7 +720,8 @@ onMounted(fetchData);
   flex-direction: column;
   gap: 6px;
   color: var(--text-secondary);
-  white-space: nowrap;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .dialog-footer {

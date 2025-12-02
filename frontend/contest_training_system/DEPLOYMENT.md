@@ -5,6 +5,7 @@
 **构建产物目录:** `dist/`
 
 构建命令生成的所有静态文件都在 `dist` 目录中,包括:
+
 - `index.html` - 入口 HTML 文件
 - `assets/` - 所有的 JS、CSS、字体等静态资源
 
@@ -50,6 +51,7 @@ docker run -d -p 80:80 --name contest-frontend contest-frontend:latest
 #### Windows 部署
 
 **1. 下载安装 Nginx**
+
 ```powershell
 # 下载地址: http://nginx.org/en/download.html
 # 或使用 Chocolatey 安装
@@ -57,18 +59,21 @@ choco install nginx
 ```
 
 **2. 复制构建产物**
+
 ```powershell
 # 复制 dist 目录内容到 Nginx html 目录
 Copy-Item -Path ".\dist\*" -Destination "C:\nginx\html\" -Recurse -Force
 ```
 
 **3. 配置 Nginx**
+
 ```powershell
 # 将 nginx.conf 复制到 Nginx 配置目录
 Copy-Item -Path ".\nginx.conf" -Destination "C:\nginx\conf\conf.d\contest.conf"
 ```
 
 **4. 启动 Nginx**
+
 ```powershell
 cd C:\nginx
 .\nginx.exe
@@ -81,6 +86,7 @@ cd C:\nginx
 ```
 
 **5. 访问应用**
+
 ```
 http://localhost
 ```
@@ -90,6 +96,7 @@ http://localhost
 #### Linux 部署
 
 **1. 安装 Nginx**
+
 ```bash
 # Ubuntu/Debian
 sudo apt update
@@ -100,6 +107,7 @@ sudo yum install nginx
 ```
 
 **2. 复制构建产物**
+
 ```bash
 # 上传 dist 目录到服务器
 scp -r dist/* user@your-server:/var/www/contest/
@@ -109,6 +117,7 @@ sudo cp -r dist/* /var/www/contest/
 ```
 
 **3. 配置 Nginx**
+
 ```bash
 # 复制配置文件
 sudo cp nginx.conf /etc/nginx/sites-available/contest
@@ -122,6 +131,7 @@ sudo nano /etc/nginx/sites-available/contest
 ```
 
 **4. 测试并启动**
+
 ```bash
 # 测试配置文件
 sudo nginx -t
@@ -134,6 +144,7 @@ sudo systemctl enable nginx
 ```
 
 **5. 配置防火墙**
+
 ```bash
 # Ubuntu UFW
 sudo ufw allow 'Nginx Full'
@@ -151,6 +162,7 @@ sudo firewall-cmd --reload
 ### 1. 修改后端 API 地址
 
 在 `nginx.conf` 中修改:
+
 ```nginx
 location /api/ {
     proxy_pass http://your-backend-server:8080/api/;
@@ -161,6 +173,7 @@ location /api/ {
 ### 2. 配置域名
 
 在 `nginx.conf` 中修改:
+
 ```nginx
 server_name contest.example.com;  # 改成你的域名
 ```
@@ -193,14 +206,17 @@ sudo certbot renew --dry-run
 ### 常见问题排查
 
 **问题 1: 刷新页面出现 404**
+
 - 原因: SPA 路由配置不正确
 - 解决: 确保 `try_files $uri $uri/ /index.html;` 配置存在
 
 **问题 2: API 请求失败**
+
 - 原因: 后端代理配置错误
 - 解决: 检查 `proxy_pass` 地址是否正确,后端服务是否运行
 
 **问题 3: 静态资源加载失败**
+
 - 原因: 路径配置错误或权限问题
 - 解决: 检查 `root` 路径,确保 Nginx 有读取权限
 
@@ -266,6 +282,7 @@ Compress-Archive -Path .\dist\* -DestinationPath contest-frontend-dist.zip
 **部署完成!** 🎉
 
 如有问题,请检查:
+
 - Nginx 错误日志: `/var/log/nginx/error.log`
 - Nginx 访问日志: `/var/log/nginx/access.log`
 - 浏览器控制台错误信息

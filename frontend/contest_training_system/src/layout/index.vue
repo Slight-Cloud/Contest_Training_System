@@ -1,12 +1,31 @@
 <template>
   <el-container class="layout-container">
-    <el-aside class="layout-aside">
+    <!-- 遮罩层 - 仅移动端显示 -->
+    <transition name="fade">
+      <div 
+        v-if="isMobileSidebarOpen" 
+        class="sidebar-overlay"
+        @click="closeMobileSidebar"
+      ></div>
+    </transition>
+
+    <!-- 侧边栏 -->
+    <el-aside 
+      class="layout-aside sidebar-fixed" 
+      :class="{ 'is-mobile-open': isMobileSidebarOpen }"
+    >
       <div class="layout-aside__header">
         <div class="layout-aside__brand">Contest Hub</div>
         <el-tag size="small" class="layout-aside__role" effect="dark">{{ roleLabel }}</el-tag>
       </div>
       <el-scrollbar class="layout-aside__scroll">
-        <el-menu :default-active="activeMenu" router class="layout-menu" :collapse="false">
+        <el-menu 
+          :default-active="activeMenu" 
+          router 
+          class="layout-menu" 
+          :collapse="false"
+          @select="handleMenuSelect"
+        >
           <template v-for="item in filteredMenus" :key="item.path">
             <el-menu-item :index="item.path" class="menu-item">
               <span>{{ item.label }}</span>
@@ -19,8 +38,21 @@
       </div>
     </el-aside>
 
-    <el-container class="layout-content">
-      <el-header class="layout-header">
+    <el-container class="layout-content main-content">
+      <el-header class="layout-header main-header">
+        <!-- 汉堡菜单按钮 - 仅移动端显示 -->
+        <el-button 
+          class="mobile-menu-trigger"
+          text
+          @click="toggleMobileSidebar"
+        >
+          <el-icon :size="24">
+            <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg">
+              <path fill="currentColor" d="M160 448a32 32 0 0 1-32-32V160.064a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V416a32 32 0 0 1-32 32H160zm448 0a32 32 0 0 1-32-32V160.064a32 32 0 0 1 32-32h255.936a32 32 0 0 1 32 32V416a32 32 0 0 1-32 32H608zM160 896a32 32 0 0 1-32-32V608a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32v256a32 32 0 0 1-32 32H160zm448 0a32 32 0 0 1-32-32V608a32 32 0 0 1 32-32h255.936a32 32 0 0 1 32 32v256a32 32 0 0 1-32 32H608z"/>
+            </svg>
+          </el-icon>
+        </el-button>
+
         <div class="layout-header__info">
           <h1 class="layout-header__title">{{ currentTitle }}</h1>
           <p class="layout-header__subtitle">{{ headerSubtitle }}</p>
@@ -49,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref, onMounted, onUnmounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useUserStore } from '@/store/user';
 
@@ -62,6 +94,45 @@ interface MenuItem {
 const router = useRouter();
 const route = useRoute();
 const userStore = useUserStore();
+
+// 移动端侧边栏状态
+const isMobileSidebarOpen = ref(false);
+const isMobile = ref(false);
+
+// 检测屏幕尺寸
+const checkMobile = () => {
+  isMobile.value = window.innerWidth < 1024;
+  // 桌面端时自动关闭移动侧边栏
+  if (!isMobile.value) {
+    isMobileSidebarOpen.value = false;
+  }
+};
+
+// 切换移动端侧边栏
+const toggleMobileSidebar = () => {
+  isMobileSidebarOpen.value = !isMobileSidebarOpen.value;
+};
+
+// 关闭移动端侧边栏
+const closeMobileSidebar = () => {
+  isMobileSidebarOpen.value = false;
+};
+
+// 菜单选择时自动关闭移动端侧边栏
+const handleMenuSelect = () => {
+  if (isMobile.value) {
+    closeMobileSidebar();
+  }
+};
+
+onMounted(() => {
+  checkMobile();
+  window.addEventListener('resize', checkMobile);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', checkMobile);
+});
 
 const menuItems = computed<MenuItem[]>(() => [
   { label: '首页', path: '/dashboard', roles: ['ADMIN', 'TEACHER', 'STUDENT'] },
@@ -143,13 +214,24 @@ const handleLogout = () => {
 }
 
 .layout-aside {
-  width: 260px;
-  background: var(--bg-canvas-inset);
+  /* width: 260px; 宽度由 .sidebar-fixed 的 --sidebar-width 控制 */
+  background: var(--bg-glass-sidebar);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
   padding: 24px 20px 28px;
-  border-right: 1px solid var(--border-default);
+  border-right: 1px solid var(--border-subtle);
+  /* position: relative; 由 .sidebar-fixed 处理定位 */
+}
+
+.layout-aside::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(99, 102, 241, 0.03) 0%, transparent 100%);
+  pointer-events: none;
 }
 
 .layout-aside__header {
@@ -194,18 +276,43 @@ const handleLogout = () => {
   margin: 4px 0;
   font-size: 14px;
   color: var(--text-secondary);
-  transition: all var(--transition-fast);
+  transition: all var(--transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.menu-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 0;
+  background: linear-gradient(180deg, var(--accent-primary) 0%, var(--accent-emphasis) 100%);
+  border-radius: 0 2px 2px 0;
+  transition: height var(--transition-normal);
 }
 
 .menu-item.is-active,
 .menu-item:hover {
   background: var(--bg-hover);
   color: var(--text-primary);
+  transform: translateX(2px);
+}
+
+.menu-item:hover::before {
+  height: 60%;
 }
 
 .menu-item.is-active {
   background: var(--accent-subtle);
   color: var(--accent-primary);
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.15);
+}
+
+.menu-item.is-active::before {
+  height: 70%;
 }
 
 .layout-content {
@@ -217,10 +324,14 @@ const handleLogout = () => {
   align-items: center;
   justify-content: space-between;
   padding: 28px 40px 18px;
-  background: var(--bg-canvas);
+  background: var(--bg-glass-header);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
   border-bottom: 1px solid var(--border-muted);
   flex-wrap: wrap;
   gap: 24px;
+  /* position: sticky; top: 0; z-index: 100; 移除粘性定位 */
+  transition: all var(--transition-normal);
 }
 
 /* Override element-plus's default header height with a more specific selector */
@@ -313,6 +424,44 @@ const handleLogout = () => {
   width: 100%;
 }
 
+/* ========================================
+   移动端响应式支持
+   ======================================== */
+
+/* 遮罩层 */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 999;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* 遮罩层淡入淡出动画 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+/* 汉堡菜单按钮 - 默认隐藏 */
+.mobile-menu-trigger {
+  display: none;
+  color: var(--text-primary);
+  padding: 8px;
+  margin-right: 12px;
+  border-radius: 8px;
+}
+
+.mobile-menu-trigger:hover {
+  background: var(--bg-hover);
+}
+
 .fade-slide-enter-active,
 .fade-slide-leave-active {
   transition: all 0.28s ease;
@@ -324,56 +473,109 @@ const handleLogout = () => {
   transform: translateY(12px);
 }
 
-@media (max-width: 1200px) {
-  .layout-container {
-    flex-direction: column;
+/* 平板和移动端响应式 (1024px 以下) */
+@media (max-width: 1023px) {
+  /* 显示汉堡菜单按钮 */
+  .mobile-menu-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .layout-aside {
-    width: 100%;
-    flex-direction: column;
-    padding: 20px 24px;
+  /* 侧边栏默认隐藏在左侧 */
+  .sidebar-fixed {
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1000;
   }
 
-  .layout-content {
-    width: 100%;
+  /* 侧边栏打开状态 */
+  .sidebar-fixed.is-mobile-open {
+    transform: translateX(0);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.5);
   }
 
+  /* 主内容区不留边距 */
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+  /* 头部布局调整 */
   .layout-header {
-    padding: 24px 24px 16px;
+    padding: 16px 20px;
   }
 
-  .layout-main {
-    padding: 16px 24px 40px;
-  }
-
-  .layout-main__inner {
-    max-width: 100%;
-  }
-}
-
-@media (max-width: 768px) {
-  .layout-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 18px;
-  }
-
-  .layout-header__actions {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .layout-header__welcome {
-    min-width: auto;
+  .layout-header__title {
+    font-size: 22px;
   }
 
   .layout-header__subtitle {
-    max-width: 100%;
+    font-size: 13px;
+  }
+
+  /* 主内容区减少内边距 */
+  .layout-main {
+    padding: 12px 20px 32px;
+  }
+}
+
+/* 小屏幕手机 (640px 以下) */
+@media (max-width: 640px) {
+  .layout-header {
+    padding: 12px 16px;
+    gap: 16px;
+  }
+
+  .layout-header__actions {
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .layout-header__welcome {
+    display: none;  /* 隐藏欢迎语 */
+  }
+
+  .layout-header__actions .el-button {
+    font-size: 13px;
+    padding: 8px 12px;
+  }
+
+  .layout-header__title {
+    font-size: 20px;
   }
 
   .layout-main {
-    padding: 16px 20px 36px;
+    padding: 12px 16px 28px;
+  }
+}
+
+/* 超小屏幕 (480px 以下) */
+@media (max-width: 480px) {
+  .layout-header {
+    padding: 12px 12px;
+  }
+
+  .layout-main {
+    padding: 8px 12px 24px;
+  }
+
+  .layout-aside__brand {
+    font-size: 16px;
+  }
+
+  .sidebar-fixed {
+    width: 260px;  /* 移动端侧边栏稍窄 */
+  }
+
+  .layout-header__actions .el-avatar {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .layout-main__inner {
+    max-width: 100%;
   }
 }
 </style>

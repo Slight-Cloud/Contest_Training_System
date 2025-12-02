@@ -125,6 +125,7 @@ export interface ProblemListParams {
   keyword?: string;
   creatorId?: number;
   isHidden?: number;
+  sortBy?: string; // 排序方式，如 'created_desc', 'created_asc'
 }
 
 export interface ProblemPayload {
@@ -163,6 +164,13 @@ export interface SolutionReportPayload {
   title: string;
   content: string;
   isPublished: number;
+}
+
+export interface SolutionUpdatePayload {
+  reportId: number;
+  title?: string;
+  content?: string;
+  isPublished?: number;
 }
 
 // ==================== 提交相关类型 ====================

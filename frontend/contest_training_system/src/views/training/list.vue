@@ -42,7 +42,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="时间范围" width="180">
+        <el-table-column label="时间范围" min-width="220">
           <template #default="{ row }">
             <div class="time-range">
               <div>{{ formatDate(row.startTime) }}</div>
@@ -50,7 +50,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="100" align="center">
+        <el-table-column label="状态" min-width="120" align="center">
           <template #default="{ row }">
             <el-tag :type="stateTagType(row.status)">
               {{ stateLabel(row.status) }}
@@ -487,24 +487,31 @@ onMounted(() => {
 
 .plan-title-cell {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   gap: 8px;
   min-width: 0;
+  width: 100%;
 }
 
 .plan-title {
   word-break: break-word;
   color: var(--text-primary);
+  font-weight: 500;
+  line-height: 1.6;
 }
 
 .time-range {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 12px;
-  line-height: 1.5;
-  white-space: nowrap;
+  font-size: 13px;
+  line-height: 1.6;
   color: var(--text-secondary);
+  width: 100%;
+}
+
+.time-range div {
+  white-space: nowrap;  /* 每一个时间单独一行 */
 }
 
 .table-footer {

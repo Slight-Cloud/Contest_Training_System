@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.system.mapper.SolutionMapper">
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="reportId">
+        INSERT INTO solution_report (problem_id, creator_id, title, content, is_published, created_at, updated_at)
+        VALUES (#{problemId}, #{creatorId}, #{title}, #{content}, #{isPublished}, #{createdAt}, #{updatedAt})
+    </insert>
+
+    <select id="findByProblemId" resultType="com.system.vo.SolutionVO">
+        SELECT
+            sr.report_id,
+            sr.problem_id,
+            sr.title,
+            sr.content,
+            sr.creator_id,
+            u.nickname AS creator_name,
+            sr.created_at
+        FROM
+            solution_report sr
+        LEFT JOIN
+            user u ON sr.creator_id = u.user_id
+        WHERE
+            sr.problem_id = #{problemId} AND sr.is_published = 1
+        ORDER BY
+            sr.created_at DESC
+    </select>
+
+    <select id="findById" resultType="com.system.entity.SolutionReport">
+        SELECT * FROM solution_report WHERE report_id = #{reportId}
+    </select>
+
+    <update id="update">
+        UPDATE solution_report
+        <set>
+            <if test="title != null">title = #{title},</if>
+            <if test="content != null">content = #{content},</if>
+            <if test="isPublished != null">is_published = #{isPublished},</if>
+            <if test="updatedAt != null">updated_at = #{updatedAt},</if>
+        </set>
+        WHERE report_id = #{reportId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM solution_report WHERE report_id = #{reportId}
+    </delete>
+
+    <select id="findDetailById" resultType="com.system.vo.SolutionVO">
+        SELECT
+            sr.report_id,
+            sr.problem_id,
+            sr.title,
+            sr.content,
+            sr.creator_id,
+            u.nickname AS creator_name,
+            sr.created_at
+        FROM
+            solution_report sr
+        LEFT JOIN
+            user u ON sr.creator_id = u.user_id
+        WHERE
+            sr.report_id = #{reportId}
+    </select>
+
+</mapper>

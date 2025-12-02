@@ -6,6 +6,7 @@ import type {
     ProblemDatasetPayload,
     SolutionReport,
     SolutionReportPayload,
+    SolutionUpdatePayload,
     ApiResponse,
     ProblemListData,
 } from '@/types';
@@ -65,12 +66,28 @@ export const publishSolutionReport = (data: SolutionReportPayload) =>
         url: '/problem/solution/create',
         method: 'post',
         data,
-    });
+    }) as Promise<ApiResponse<{ reportId: number; problemId: number }>>;
 
 // 查询题解列表
-export const getSolutionList = (problemId: number) =>
-    request<ApiResponse<SolutionReport[]>>({
+export const getSolutionList = (problemId: number, params?: { page: number; pageSize: number }) =>
+    request<ApiResponse<{ total: number; list: SolutionReport[] }>>({
         url: `/problem/${problemId}/solution/list`,
         method: 'get',
+        params,
+    }) as Promise<ApiResponse<{ total: number; list: SolutionReport[] }>>;
+
+// 修改题解
+export const updateSolutionReport = (data: SolutionUpdatePayload) =>
+    request<ApiResponse<null>>({
+        url: '/problem/solution/update',
+        method: 'put',
+        data,
+    });
+
+// 删除题解
+export const deleteSolutionReport = (reportId: number) =>
+    request<ApiResponse<null>>({
+        url: `/problem/solution/${reportId}`,
+        method: 'delete',
     });
 

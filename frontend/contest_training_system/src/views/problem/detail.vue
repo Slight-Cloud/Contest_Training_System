@@ -54,17 +54,17 @@
               <el-tab-pane label="题目描述" name="description">
                 <div class="section">
                   <h3 class="section-title">题目描述</h3>
-                  <div class="section-content" v-html="problem.description"></div>
+                  <MarkdownRenderer :content="problem.description" class="section-content" />
                 </div>
 
                 <div class="section">
                   <h3 class="section-title">输入说明</h3>
-                  <div class="section-content" v-html="problem.inputSpec"></div>
+                  <MarkdownRenderer :content="problem.inputSpec" class="section-content" />
                 </div>
 
                 <div class="section">
                   <h3 class="section-title">输出说明</h3>
-                  <div class="section-content" v-html="problem.outputSpec"></div>
+                  <MarkdownRenderer :content="problem.outputSpec" class="section-content" />
                 </div>
 
                 <div class="section">
@@ -79,7 +79,7 @@
 
                 <div v-if="problem.remark" class="section">
                   <h3 class="section-title">备注</h3>
-                  <div class="section-content remark" v-html="problem.remark"></div>
+                  <MarkdownRenderer :content="problem.remark" class="section-content remark" />
                 </div>
               </el-tab-pane>
 
@@ -134,7 +134,7 @@
                       class="solution-item"
                     >
                       <h4 class="solution-title">{{ solution.title }}</h4>
-                      <div class="solution-content" v-html="solution.content"></div>
+                      <MarkdownRenderer :content="solution.content" class="solution-content" />
                       <div class="solution-meta">
                         <span>发布时间: {{ formatDateTime(solution.createdAt) }}</span>
                       </div>
@@ -213,7 +213,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { Clock, Cpu, Edit, Upload } from '@element-plus/icons-vue';
 import { useUserStore } from '@/store/user';
-import { getProblemDetail } from '@/api/problem';
+import { getProblemDetail, getSolutionList } from '@/api/problem';
 import { getSubmissionList } from '@/api/submission';
 import {
   formatDateTime,
@@ -222,6 +222,7 @@ import {
   getStatusLabel,
 } from '@/utils/helpers';
 import type { Problem, SolutionReport, Submission } from '@/types';
+import MarkdownRenderer from '@/components/MarkdownRenderer.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -251,56 +252,31 @@ const canSubmit = computed(() => isStudent.value || isTeacher.value);
 
 // 获取题目详情
 const fetchProblemDetail = async () => {
-  console.log('=== 获取题目详情调试 ===');
-  console.log('题目ID:', problemId);
-  console.log('当前用户角色:', userStore.role);
-  console.log('当前用户token:', userStore.token ? `${userStore.token.substring(0, 20)}...` : 'null');
-  
+  // ... (省略日志)
   loading.value = true;
   try {
-    console.log('开始请求题目详情...');
     const res = await getProblemDetail(problemId);
-    console.log('题目详情响应:', res);
     problem.value = (res.data as any) || null;
-    console.log('题目详情数据:', problem.value);
   } catch (error: any) {
-    console.error('获取题目详情失败:', error);
-    console.error('错误详情:', error.response);
     ElMessage.error(error?.message || '获取题目详情失败');
   } finally {
     loading.value = false;
   }
 };
 
-// 获取题解（使用专门的错误处理）
+// 获取题解
 const fetchSolutions = async () => {
   try {
-    console.log('开始获取题解数据...');
+    const res = await getSolutionList(problemId, { page: 1, pageSize: 50 });
     
-    // 使用axios直接调用，避免全局错误处理
-    const response = await fetch(`/api/problem/${problemId}/solution/list`, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${userStore.token}`,
-        'Content-Type': 'application/json'
-      }
-    });
-    
-    if (response.ok) {
-      const data = await response.json();
-      const allSolutions = data.data || [];
+    if (res && res.code === 1 && res.data) {
+      const allSolutions = res.data?.list || [];
       solutions.value = isTeacher.value
         ? allSolutions
         : allSolutions.filter((s: any) => s.isPublished === 1);
-      console.log('题解数据加载成功:', solutions.value.length, '条');
-    } else {
-      console.log('题解API返回错误状态:', response.status);
-      // 不显示错误消息，静默处理
     }
   } catch (error: any) {
-    console.log('题解数据加载失败，这是正常的（API可能未实现）:', error.message);
-    // 对于题解这种可选功能，不显示错误消息
-    // 只记录日志，不影响用户体验
+    console.log('题解数据加载失败:', error.message);
   }
 };
 
