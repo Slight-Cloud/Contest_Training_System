@@ -235,7 +235,7 @@ const rules: FormRules = {
     { type: 'number', min: 16, max: 1024, message: '内存限制应在16-1024MB之间', trigger: 'blur' }
   ],
   testdataZip: [
-    { required: !isEdit.value, message: '请上传测试数据包', trigger: 'change' }
+    { required: false, message: '请上传测试数据包', trigger: 'change' }
   ]
 };
 
