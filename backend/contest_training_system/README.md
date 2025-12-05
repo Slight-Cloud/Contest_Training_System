@@ -242,6 +242,11 @@ contest_training_system
 - `DELETE /contest/{contestId}`: [管理员/教师] 删除一个竞赛。
 - `GET /contest/list`: 获取竞赛列表，支持分页和筛选。
 - `GET /contest/{contestId}`: 获取单个竞赛的详细信息。
+  - **访问控制逻辑**：
+    - **未开始的私密赛事**：学生/教师不允许查看（创建者除外），返回“当前赛事未开始”提示。
+    - **私有赛事详情查看**：未参加的学生/教师需要输入正确密码（创建者和已参加者除外）。
+    - **管理员**无以上限制。
+  - **参数**：`password` (可选): 私有赛事密码。
 - `POST /contest/join`: 用户报名参加一个竞赛。
 - `POST /contest/hasJoined`: 检查用户是否已加入竞赛。
 

@@ -20,6 +20,7 @@ import com.system.vo.ContestDetailVO;
 import com.system.vo.ContestListVO;
 import com.system.vo.PageResultVO;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,6 +45,8 @@ public class ContestServiceImpl implements ContestService {
         this.contestParticipantMapper = contestParticipantMapper;
         this.passwordEncoder = passwordEncoder;
     }
+
+
 
     @Override
     @Transactional // 开启事务
@@ -193,17 +196,44 @@ public class ContestServiceImpl implements ContestService {
     }
 
     @Override
-    public ContestDetailVO getContestDetail(Long contestId) {
+    public ContestDetailVO getContestDetail(Long contestId, String password) {
         Contest contest = contestMapper.getById(contestId);
         if (contest == null||(UserContext.getRole().equals("STUDENT")&&contest.getState().equals("HIDDEN"))) {
             throw new BusinessException("赛事不存在或已隐藏");
+        }
+
+        String role = UserContext.getRole();
+        Long currentUserId = UserContext.getUserId();
+        LocalDateTime now = LocalDateTime.now();
+        boolean isAdmin = "ADMIN".equals(role);
+        boolean isCreator = contest.getCreatorId() != null && contest.getCreatorId().equals(currentUserId);
+        boolean isPrivate = "PRIVATE".equals(contest.getVisibility());
+        boolean isScheduled = contest.getStartTime().isAfter(now);
+
+        // 逻辑0: 未开始的私密赛事访问控制（管理员和创建者除外）
+        if (isPrivate && isScheduled && !isAdmin && !isCreator) {
+            throw new BusinessException("当前赛事未开始");
+        }
+
+        // 逻辑1: 私有赛事详情访问需要密码验证（管理员、创建者、已参加者除外）
+        // 只有在非管理员、非创建者的情况下才需要检查参赛状态和密码
+        if (isPrivate && !isAdmin && !isCreator) {
+            boolean hasJoined = hasJoinedContest(contestId, currentUserId);
+            if (!hasJoined) {
+                // 未参加的用户需要验证密码
+                if (password == null || password.isEmpty()) {
+                    throw new BusinessException("需要输入正确的赛事密码才能查看详情");
+                }
+                if (!passwordEncoder.matches(password, contest.getPasswordHash()) && !password.equals(contest.getPasswordHash())) {
+                    throw new BusinessException("赛事密码错误");
+                }
+            }
         }
 
         ContestDetailVO detailVO = new ContestDetailVO();
         BeanUtils.copyProperties(contest, detailVO);
 
         // 动态更新状态
-        LocalDateTime now = LocalDateTime.now();
         if (detailVO.getEndTime().isBefore(now)) {
             detailVO.setStatus("ENDED");
         }

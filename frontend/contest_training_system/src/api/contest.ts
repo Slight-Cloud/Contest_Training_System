@@ -52,10 +52,11 @@ export const hasJoinedContest = (data: HasJoinedContestPayload) =>
         suppressGlobalError: true,
     });
 
-export const getContestDetail = (contestId: number) =>
+export const getContestDetail = (contestId: number, password?: string) =>
     request<ApiResponse<Contest>>({
         url: `/contest/${contestId}`,
         method: 'get',
+        params: password ? { password } : undefined,
     });
 
 export const getContestRanking = (contestId: number) =>

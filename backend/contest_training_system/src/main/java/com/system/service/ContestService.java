@@ -38,9 +38,10 @@ public interface ContestService {
     /**
      * 获取赛事详情
      * @param contestId 赛事ID
+     * @param password 私有赛事密码（可选）
      * @return 赛事详情
      */
-    ContestDetailVO getContestDetail(Long contestId);
+    ContestDetailVO getContestDetail(Long contestId, String password);
 
     /**
      * 学生报名参赛

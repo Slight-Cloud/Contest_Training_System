@@ -66,8 +66,10 @@ public class ContestController {
      * 获取赛事详情 (公开)
      */
     @GetMapping("/{contestId}")
-    public Result<ContestDetailVO> getContestDetail(@PathVariable Long contestId) {
-        ContestDetailVO contestDetail = contestService.getContestDetail(contestId);
+    public Result<ContestDetailVO> getContestDetail(
+            @PathVariable Long contestId,
+            @RequestParam(required = false) String password) {
+        ContestDetailVO contestDetail = contestService.getContestDetail(contestId, password);
         return Result.success(contestDetail);
     }
 

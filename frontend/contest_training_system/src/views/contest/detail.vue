@@ -219,6 +219,46 @@
         </el-button>
       </template>
     </el-dialog>
+
+    <!-- 密码验证对话框 -->
+    <el-dialog
+      v-model="passwordDialog.visible"
+      title="验证赛事密码"
+      width="420px"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+    >
+      <el-form label-width="88px">
+        <el-form-item label="赛事名称">
+          <span>私有赛事</span>
+        </el-form-item>
+        <el-form-item label="赛事密码">
+          <el-input
+            v-model="passwordDialog.password"
+            type="password"
+            placeholder="请输入赛事密码"
+            show-password
+            @keyup.enter="submitPassword"
+          />
+        </el-form-item>
+        <el-alert
+          type="warning"
+          :closable="false"
+          show-icon
+        >
+          <template #title>
+            <span style="font-size: 13px;">此赛事为私有赛事，需要密码才能查看详情</span>
+          </template>
+        </el-alert>
+      </el-form>
+      <template #footer>
+        <el-button @click="$router.back()">返回</el-button>
+        <el-button type="primary" :loading="passwordDialog.submitting" @click="submitPassword">
+          确认
+        </el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
@@ -273,11 +313,18 @@ const joinDialog = ref({
   submitting: false,
 });
 
+// 密码验证对话框
+const passwordDialog = ref({
+  visible: false,
+  password: '',
+  submitting: false,
+});
+
 // 获取赛事详情
-const fetchContestDetail = async () => {
+const fetchContestDetail = async (password?: string) => {
   loading.value = true;
   try {
-    const res = await getContestDetail(contestId);
+    const res = await getContestDetail(contestId, password);
     contest.value = (res.data as any) || null;
     problems.value = contest.value?.problems || [];
 
@@ -285,7 +332,17 @@ const fetchContestDetail = async () => {
       await checkJoinStatus();
     }
   } catch (error: any) {
-    ElMessage.error(error?.message || '获取赛事详情失败');
+    // 处理密码验证错误
+    const errorMsg = error?.message || '';
+    if (errorMsg.includes('需要输入正确的赛事密码')) {
+      // 首次访问，需要密码 - 弹出密码对话框
+      passwordDialog.value.visible = true;
+      passwordDialog.value.password = '';
+    } else {
+      // 其他错误（包括密码错误）- 显示错误并重新抛出
+      ElMessage.error(errorMsg || '获取赛事详情失败');
+      throw error;
+    }
   } finally {
     loading.value = false;
   }
@@ -357,6 +414,26 @@ const submitJoin = async () => {
     ElMessage.error(error?.message || '参赛失败');
   } finally {
     joinDialog.value.submitting = false;
+  }
+};
+
+// 提交密码验证
+const submitPassword = async () => {
+  if (!passwordDialog.value.password) {
+    ElMessage.warning('请输入赛事密码');
+    return;
+  }
+
+  passwordDialog.value.submitting = true;
+  try {
+    await fetchContestDetail(passwordDialog.value.password);
+    passwordDialog.value.visible = false;
+    ElMessage.success('验证成功');
+  } catch (error: any) {
+    // fetchContestDetail 已经显示了错误消息，这里不需要再显示
+    // ElMessage.error 已经在 fetchContestDetail 中调用了
+  } finally {
+    passwordDialog.value.submitting = false;
   }
 };
 
